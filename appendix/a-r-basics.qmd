@@ -1,0 +1,371 @@
+---
+title: "附錄 A：R 快速入門"
+---
+
+```{r}
+#| include: false
+source(here::here("R/_common.R"))
+```
+
+::: {.callout-note}
+## 選讀
+
+本附錄提供 R 語言的基礎操作，幫助沒有 R 經驗的讀者快速上手。如果您已熟悉 R，可以跳過此章節。
+:::
+
+## 安裝 R 與 RStudio
+
+1. **安裝 R**：前往 [https://cran.r-project.org/](https://cran.r-project.org/) 下載最新版本
+2. **安裝 RStudio**：前往 [https://posit.co/downloads/](https://posit.co/downloads/) 下載免費版 RStudio Desktop
+
+## 基本操作
+
+### 算術運算
+
+```{r}
+# 基本運算
+2 + 3
+10 - 4
+5 * 6
+20 / 4
+2^3  # 次方
+```
+
+### 變數指派
+
+```{r}
+# 使用 <- 或 = 指派變數
+x <- 5
+y = 10
+
+# 顯示變數
+x
+y
+
+# 使用變數
+x + y
+```
+
+### 向量與序列
+
+```{r}
+# 建立向量
+v1 <- c(1, 2, 3, 4, 5)
+v2 <- 1:10
+
+# 序列
+seq(0, 1, by = 0.1)
+seq(0, 1, length.out = 11)
+```
+
+## 安裝與載入套件
+
+### 安裝套件（只需執行一次）
+
+```{r}
+#| eval: false
+
+# 安裝本書使用的主要套件
+install.packages("ggplot2")
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("patchwork")
+install.packages("plotly")
+install.packages("latex2exp")
+install.packages("showtext")
+
+# 或一次安裝全部
+install.packages(c("ggplot2", "dplyr", "tidyr", "patchwork", "plotly", "latex2exp", "showtext"))
+```
+
+### 載入套件（每次使用前需執行）
+
+```{r}
+#| message: false
+#| warning: false
+
+# ggplot2 和 patchwork 已在 setup 中載入
+library(dplyr)
+library(tidyr)
+```
+
+## ggplot2 繪圖基礎
+
+### 基本結構
+
+ggplot2 使用「圖層」概念建構圖形：
+
+```{r}
+# 準備資料
+x <- seq(-3, 3, by = 0.1)
+y <- dnorm(x)  # 標準常態分布
+df <- data.frame(x, y)
+
+# 基本折線圖
+ggplot(df, aes(x = x, y = y)) +
+  geom_line()
+```
+
+### 美化圖形
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  geom_area(fill = "#2E86AB", alpha = 0.3) +
+  labs(
+    title = "標準常態分布",
+    subtitle = "μ = 0, σ = 1",
+    x = "x",
+    y = "機率密度 f(x)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+### 常用圖層
+
+```{r}
+# 散點圖
+ggplot(df, aes(x, y)) +
+  geom_point()
+
+# 長條圖（使用新資料）
+data <- data.frame(
+  category = c("A", "B", "C", "D"),
+  value = c(23, 45, 12, 34)
+)
+
+ggplot(data, aes(x = category, y = value)) +
+  geom_col(fill = "#2E86AB")
+
+# 直方圖
+set.seed(42)
+random_data <- rnorm(1000)
+
+ggplot(data.frame(x = random_data), aes(x)) +
+  geom_histogram(fill = "#2E86AB", color = "white", bins = 30)
+```
+
+### 添加註解與線
+
+```{r}
+ggplot(df, aes(x, y)) +
+  geom_line(color = "#2E86AB", linewidth = 1) +
+  # 垂直線
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+  # 水平線
+  geom_hline(yintercept = 0.2, linetype = "dotted", color = "gray50") +
+  # 文字註解
+  annotate("text", x = 0, y = 0.42, label = "μ = 0", size = 5) +
+  # 點
+  geom_point(aes(x = 0, y = dnorm(0)), color = "#E94F37", size = 4) +
+  theme_minimal()
+```
+
+## dplyr 資料處理
+
+### 基本操作
+
+```{r}
+# 建立示範資料
+patients <- data.frame(
+  id = 1:5,
+  age = c(45, 62, 38, 71, 54),
+  sbp = c(120, 145, 118, 160, 135),
+  treatment = c("A", "B", "A", "B", "A")
+)
+
+# 檢視資料
+patients
+```
+
+### 篩選 (filter)
+
+```{r}
+# 篩選年齡 > 50 的病患
+patients %>%
+  filter(age > 50)
+
+# 篩選收縮壓 >= 140
+patients %>%
+  filter(sbp >= 140)
+```
+
+### 選擇欄位 (select)
+
+```{r}
+# 只保留 id 和 age
+patients %>%
+  select(id, age)
+
+# 排除 treatment
+patients %>%
+  select(-treatment)
+```
+
+### 新增欄位 (mutate)
+
+```{r}
+# 計算高血壓分類
+patients %>%
+  mutate(
+    hypertension = ifelse(sbp >= 140, "是", "否")
+  )
+```
+
+### 排序 (arrange)
+
+```{r}
+# 依年齡排序
+patients %>%
+  arrange(age)
+
+# 依收縮壓遞減排序
+patients %>%
+  arrange(desc(sbp))
+```
+
+### 管線串接
+
+```{r}
+# 組合多個操作
+patients %>%
+  filter(age > 40) %>%
+  mutate(age_group = ifelse(age >= 60, "老年", "中年")) %>%
+  select(id, age, age_group, sbp) %>%
+  arrange(desc(sbp))
+```
+
+## 數學函數
+
+### 常用統計函數
+
+```{r}
+# 常態分布
+dnorm(0)      # 密度函數 (PDF)
+pnorm(0)      # 累積分布函數 (CDF)
+qnorm(0.5)    # 分位數函數
+rnorm(10)     # 隨機抽樣
+
+# 指數函數與對數
+exp(1)        # e^1
+log(10)       # 自然對數 ln(10)
+log10(100)    # 以 10 為底
+
+# 三角函數
+sin(pi/2)
+cos(0)
+```
+
+### 向量運算
+
+```{r}
+x <- 1:5
+
+# 向量化運算
+x^2
+sqrt(x)
+log(x)
+
+# 統計量
+mean(x)
+sd(x)
+var(x)
+sum(x)
+```
+
+## patchwork 組合圖形
+
+```{r}
+# 建立兩個圖
+p1 <- ggplot(df, aes(x, y)) +
+  geom_line(color = "#2E86AB") +
+  labs(title = "圖 A") +
+  theme_minimal()
+
+p2 <- ggplot(df, aes(x, y)) +
+  geom_area(fill = "#E94F37", alpha = 0.5) +
+  labs(title = "圖 B") +
+  theme_minimal()
+
+# 水平排列
+p1 | p2
+```
+
+```{r}
+# 垂直排列
+p1 / p2
+```
+
+```{r}
+# 複雜排列
+p1 | (p2 / p1)
+```
+
+## 獲取幫助
+
+```{r}
+#| eval: false
+
+# 查看函數說明
+?mean
+?ggplot
+
+# 搜尋關鍵字
+??regression
+
+# 查看套件說明
+help(package = "ggplot2")
+```
+
+## 實用技巧
+
+### 設定工作目錄
+
+```{r}
+#| eval: false
+
+# 查看當前工作目錄
+getwd()
+
+# 設定工作目錄
+setwd("/path/to/your/folder")
+```
+
+### 儲存圖形
+
+```{r}
+#| eval: false
+
+# 使用 ggsave
+p <- ggplot(df, aes(x, y)) +
+  geom_line()
+
+ggsave("my_plot.png", plot = p, width = 8, height = 6, dpi = 300)
+```
+
+### 設定隨機種子
+
+```{r}
+# 確保結果可重現
+set.seed(42)
+rnorm(5)
+
+set.seed(42)
+rnorm(5)  # 產生相同的隨機數
+```
+
+## 進階學習資源
+
+- **ggplot2 官方文件**：[https://ggplot2.tidyverse.org/](https://ggplot2.tidyverse.org/)
+- **R for Data Science**：[https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
+- **dplyr 速查表**：[https://dplyr.tidyverse.org/](https://dplyr.tidyverse.org/)
+- **RStudio Cheatsheets**：[https://posit.co/resources/cheatsheets/](https://posit.co/resources/cheatsheets/)
+
+::: {.callout-tip}
+## 學習建議
+
+1. 不需要記住所有函數，遇到問題時查閱文件即可
+2. 多動手練習，修改書中的範例程式碼
+3. 善用 RStudio 的自動補全功能（按 Tab 鍵）
+4. 遇到錯誤訊息時，複製到 Google 搜尋通常能找到解答
+:::

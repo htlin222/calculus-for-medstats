@@ -1,0 +1,69 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "醫學統計的微積分基礎"
+  subtitle: "用 R 視覺化理解統計背後的數學"
+  author: "林協霆"
+  date: today
+  language: zh-TW
+
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: part1-foundations/_part.qmd
+      chapters:
+        - part1-foundations/01-functions.qmd
+        - part1-foundations/02-limits.qmd
+        - part1-foundations/03-continuity.qmd
+    - part: part2-differentiation/_part.qmd
+      chapters:
+        - part2-differentiation/04-derivative-concept.qmd
+        - part2-differentiation/05-derivative-rules.qmd
+        - part2-differentiation/06-exp-log.qmd
+        - part2-differentiation/07-optimization.qmd
+    - part: part3-integration/_part.qmd
+      chapters:
+        - part3-integration/08-integral-concept.qmd
+        - part3-integration/09-integral-rules.qmd
+        - part3-integration/10-improper-integral.qmd
+    - part: part4-multivariate/_part.qmd
+      chapters:
+        - part4-multivariate/11-partial-derivatives.qmd
+        - part4-multivariate/12-multiple-integrals.qmd
+    - part: part5-applications/_part.qmd
+      chapters:
+        - part5-applications/13-probability-distributions.qmd
+        - part5-applications/14-mle.qmd
+        - part5-applications/15-regression.qmd
+        - part5-applications/16-survival.qmd
+        - part5-applications/17-bayesian.qmd
+    - part: "附錄"
+      chapters:
+        - appendix/a-r-basics.qmd
+        - appendix/b-formulas.qmd
+        - appendix/c-answers.qmd
+    - references.qmd
+
+format:
+  html:
+    theme: cosmo
+    code-fold: false
+    code-tools: true
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    highlight-style: github
+
+execute:
+  echo: true
+  warning: false
+  message: false
+
+knitr:
+  opts_chunk:
+    R.options:
+      width: 80
+
+bibliography: references.bib

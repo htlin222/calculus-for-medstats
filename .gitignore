@@ -1,0 +1,60 @@
+# Quarto output
+/_book/
+/.quarto/
+
+# R related
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# R package library
+renv/library/
+renv/local/
+renv/staging/
+renv/python/
+renv/.gitignore
+
+# Knitr cache
+*_cache/
+*_files/
+
+# R session files
+.Rproj.user
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python (if used)
+__pycache__/
+*.py[cod]
+.Python
+.env
+.venv/
+venv/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Secrets (never commit these)
+.env
+.env.local
+credentials.json
+*.pem
+*.key

@@ -1,0 +1,276 @@
+---
+title: "附錄 B：公式速查表"
+---
+
+```{r}
+#| include: false
+source(here::here("R/_common.R"))
+```
+
+## 微分公式
+
+### 基本微分規則
+
+| 函數 | 導數 | 說明 |
+|------|------|------|
+| $c$ (常數) | $0$ | 常數的導數為零 |
+| $x$ | $1$ | |
+| $x^n$ | $nx^{n-1}$ | 冪次規則 (Power Rule) |
+| $e^x$ | $e^x$ | 指數函數的神奇性質 |
+| $a^x$ | $a^x \ln a$ | 一般指數函數 |
+| $\ln x$ | $\frac{1}{x}$ | 自然對數 |
+| $\log_a x$ | $\frac{1}{x \ln a}$ | 一般對數 |
+| $\sin x$ | $\cos x$ | |
+| $\cos x$ | $-\sin x$ | |
+| $\tan x$ | $\sec^2 x$ | |
+
+### 微分運算規則
+
+| 規則 | 公式 | 範例 |
+|------|------|------|
+| 常數倍數 | $\frac{d}{dx}[cf(x)] = c f'(x)$ | $\frac{d}{dx}[3x^2] = 6x$ |
+| 和差規則 | $\frac{d}{dx}[f(x) \pm g(x)] = f'(x) \pm g'(x)$ | $\frac{d}{dx}[x^2 + x] = 2x + 1$ |
+| 乘法規則 | $\frac{d}{dx}[f(x)g(x)] = f'(x)g(x) + f(x)g'(x)$ | $\frac{d}{dx}[x \cdot e^x] = e^x + xe^x$ |
+| 除法規則 | $\frac{d}{dx}\left[\frac{f(x)}{g(x)}\right] = \frac{f'(x)g(x) - f(x)g'(x)}{[g(x)]^2}$ | $\frac{d}{dx}\left[\frac{x}{x^2+1}\right] = \frac{1-x^2}{(x^2+1)^2}$ |
+| **連鎖律** | $\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$ | $\frac{d}{dx}[e^{x^2}] = 2xe^{x^2}$ |
+
+::: {.callout-important}
+## 連鎖律 (Chain Rule)
+
+連鎖律是微分中最重要的規則，也是統計學中最常用的工具。
+
+**口訣**：外層導數 × 內層導數
+:::
+
+### 統計常用微分
+
+| 函數 | 導數 | 應用 |
+|------|------|------|
+| $e^{-x}$ | $-e^{-x}$ | 指數分布 |
+| $e^{-x^2/2}$ | $-xe^{-x^2/2}$ | 常態分布 |
+| $\ln(1+e^x)$ | $\frac{e^x}{1+e^x}$ | Logistic regression |
+| $x \ln x$ | $\ln x + 1$ | Entropy |
+| $(1-p)^n$ | $-n(1-p)^{n-1}$ | 二項分布 |
+
+## 積分公式
+
+### 基本積分規則
+
+| 函數 | 不定積分 | 說明 |
+|------|----------|------|
+| $k$ (常數) | $kx + C$ | |
+| $x^n$ $(n \neq -1)$ | $\frac{x^{n+1}}{n+1} + C$ | 冪次規則 |
+| $\frac{1}{x}$ | $\ln|x| + C$ | |
+| $e^x$ | $e^x + C$ | |
+| $a^x$ | $\frac{a^x}{\ln a} + C$ | |
+| $\sin x$ | $-\cos x + C$ | |
+| $\cos x$ | $\sin x + C$ | |
+| $\frac{1}{1+x^2}$ | $\arctan x + C$ | |
+
+### 積分技巧
+
+**換元積分法 (Substitution)**：
+
+$$\int f(g(x))g'(x)dx = \int f(u)du, \quad u = g(x)$$
+
+**分部積分法 (Integration by Parts)**：
+
+$$\int u \, dv = uv - \int v \, du$$
+
+### 定積分性質
+
+| 性質 | 公式 |
+|------|------|
+| 線性 | $\int_a^b [cf(x) + dg(x)]dx = c\int_a^b f(x)dx + d\int_a^b g(x)dx$ |
+| 區間可加性 | $\int_a^b f(x)dx = \int_a^c f(x)dx + \int_c^b f(x)dx$ |
+| 對稱性 | $\int_{-a}^a f(x)dx = 2\int_0^a f(x)dx$ （若 $f$ 為偶函數） |
+| 對稱性 | $\int_{-a}^a f(x)dx = 0$ （若 $f$ 為奇函數） |
+
+## 機率分布公式
+
+### 常態分布 (Normal Distribution)
+
+**機率密度函數 (PDF)**：
+$$f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$$
+
+**標準常態**（$\mu=0, \sigma=1$）：
+$$\phi(x) = \frac{1}{\sqrt{2\pi}} e^{-\frac{x^2}{2}}$$
+
+**性質**：
+
+- 期望值：$E[X] = \mu$
+- 變異數：$Var(X) = \sigma^2$
+- $\int_{-\infty}^{\infty} f(x)dx = 1$
+
+### 指數分布 (Exponential Distribution)
+
+**PDF**：
+$$f(x) = \lambda e^{-\lambda x}, \quad x \geq 0$$
+
+**CDF**：
+$$F(x) = 1 - e^{-\lambda x}$$
+
+**性質**：
+
+- 期望值：$E[X] = \frac{1}{\lambda}$
+- 變異數：$Var(X) = \frac{1}{\lambda^2}$
+- 無記憶性：$P(X > s+t | X > s) = P(X > t)$
+
+### 二項分布 (Binomial Distribution)
+
+**PMF**：
+$$P(X = k) = \binom{n}{k} p^k (1-p)^{n-k}$$
+
+**性質**：
+
+- 期望值：$E[X] = np$
+- 變異數：$Var(X) = np(1-p)$
+
+### Poisson 分布
+
+**PMF**：
+$$P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}$$
+
+**性質**：
+
+- 期望值：$E[X] = \lambda$
+- 變異數：$Var(X) = \lambda$
+
+### Beta 分布
+
+**PDF**：
+$$f(x) = \frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha, \beta)}, \quad 0 \leq x \leq 1$$
+
+其中 Beta 函數：
+$$B(\alpha, \beta) = \int_0^1 x^{\alpha-1}(1-x)^{\beta-1}dx = \frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$$
+
+## 統計公式
+
+### 期望值與變異數
+
+**期望值 (Expectation)**：
+
+- 離散：$E[X] = \sum_i x_i P(X = x_i)$
+- 連續：$E[X] = \int_{-\infty}^{\infty} x f(x)dx$
+
+**變異數 (Variance)**：
+
+$$Var(X) = E[(X - \mu)^2] = E[X^2] - (E[X])^2$$
+
+**標準差 (Standard Deviation)**：
+
+$$SD(X) = \sqrt{Var(X)}$$
+
+### 最大概似估計 (MLE)
+
+**Likelihood 函數**：
+$$L(\theta | x_1, \ldots, x_n) = \prod_{i=1}^n f(x_i | \theta)$$
+
+**Log-likelihood**：
+$$\ell(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(x_i | \theta)$$
+
+**MLE 求解**：
+$$\frac{d\ell(\theta)}{d\theta} = 0$$
+
+**Fisher Information**：
+$$I(\theta) = -E\left[\frac{d^2 \ell(\theta)}{d\theta^2}\right]$$
+
+**標準誤**：
+$$SE(\hat{\theta}) = \frac{1}{\sqrt{I(\theta)}}$$
+
+### Logistic Regression
+
+**Logit 函數**：
+$$\text{logit}(p) = \ln\left(\frac{p}{1-p}\right)$$
+
+**Logistic 函數**：
+$$p = \frac{e^{\beta_0 + \beta_1 x}}{1 + e^{\beta_0 + \beta_1 x}} = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x)}}$$
+
+**導數**：
+$$\frac{dp}{dx} = \beta_1 p(1-p)$$
+
+### 存活分析 (Survival Analysis)
+
+**Survival Function**：
+$$S(t) = P(T > t) = 1 - F(t)$$
+
+**Hazard Function**：
+$$h(t) = \lim_{\Delta t \to 0} \frac{P(t < T \leq t + \Delta t | T > t)}{\Delta t} = \frac{f(t)}{S(t)}$$
+
+**Cumulative Hazard**：
+$$H(t) = \int_0^t h(u)du = -\ln S(t)$$
+
+**關係式**：
+$$S(t) = e^{-H(t)}$$
+$$f(t) = h(t)S(t)$$
+
+### 線性迴歸 (Linear Regression)
+
+**模型**：
+$$Y = \beta_0 + \beta_1 X + \epsilon$$
+
+**OLS 估計**（最小平方法）：
+$$\hat{\beta}_1 = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}$$
+$$\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}$$
+
+**殘差平方和**：
+$$RSS = \sum_{i=1}^n (y_i - \hat{y}_i)^2$$
+
+### 貝氏定理 (Bayes' Theorem)
+
+**離散形式**：
+$$P(\theta | X) = \frac{P(X | \theta)P(\theta)}{P(X)}$$
+
+**連續形式**：
+$$p(\theta | x) = \frac{f(x | \theta) \pi(\theta)}{\int f(x | \theta') \pi(\theta') d\theta'}$$
+
+**比例形式**（常用）：
+$$\text{Posterior} \propto \text{Likelihood} \times \text{Prior}$$
+
+## 微積分基本定理
+
+**第一基本定理**：
+
+若 $F(x) = \int_a^x f(t)dt$，則 $F'(x) = f(x)$
+
+**第二基本定理**：
+
+$$\int_a^b f(x)dx = F(b) - F(a)$$
+
+其中 $F$ 是 $f$ 的任一反導數
+
+## 常用不等式
+
+**Cauchy-Schwarz 不等式**：
+$$\left(\int fg\right)^2 \leq \int f^2 \int g^2$$
+
+**Jensen 不等式**（凸函數）：
+$$f(E[X]) \leq E[f(X)]$$
+
+## 重要極限
+
+$$\lim_{n \to \infty} \left(1 + \frac{1}{n}\right)^n = e$$
+
+$$\lim_{x \to 0} \frac{e^x - 1}{x} = 1$$
+
+$$\lim_{x \to 0} \frac{\ln(1+x)}{x} = 1$$
+
+$$\lim_{x \to 0} \frac{\sin x}{x} = 1$$
+
+## Taylor 展開式（進階）
+
+$$f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots$$
+
+**常用展開式**：
+
+$$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$$
+
+$$\ln(1+x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots, \quad |x| < 1$$
+
+::: {.callout-tip}
+## 使用建議
+
+- 本速查表涵蓋本書所有重要公式
+- 建議標記常用公式，方便快速查找
+- 遇到不熟悉的符號，可回到對應章節複習
+:::

@@ -1,0 +1,87 @@
+# Part V: 統計應用總整理 {.unnumbered}
+
+在前面四個部分，我們學習了微積分的基礎概念：函數、極限、連續性、微分、積分、多變量微積分。現在，我們要將這些數學工具應用到醫學統計的實際問題中。
+
+## 為什麼微積分對統計這麼重要？
+
+統計學的核心是**處理不確定性**，而微積分提供了精確描述不確定性的語言：
+
+- **機率分布**：用連續函數描述隨機變數的行為
+- **最大概似估計**：用微分找到最佳參數值
+- **迴歸分析**：用偏微分推導迴歸係數
+- **存活分析**：用積分計算存活機率
+- **貝氏統計**：用積分更新機率信念
+
+## 本部分章節安排
+
+### Chapter 13: 機率分布 {#sec-distributions}
+
+連接 PDF 和 CDF 的微積分關係，理解常見分布的數學形式，用積分計算期望值和變異數。
+
+**關鍵概念**：
+
+- $f(x) = \frac{d}{dx}F(x)$（PDF 是 CDF 的導數）
+- $F(x) = \int_{-\infty}^{x} f(t)dt$（CDF 是 PDF 的積分）
+- $E[X] = \int_{-\infty}^{\infty} x f(x)dx$（期望值的積分定義）
+
+### Chapter 14: 最大概似估計 {#sec-mle}
+
+統計推論的基石，用微分找到最能解釋觀察資料的參數值。
+
+**關鍵概念**：
+
+- Likelihood function 的建構
+- Log-likelihood 的微分
+- Score function: $U(\theta) = \frac{\partial}{\partial\theta}\log L(\theta)$
+- Fisher Information: $I(\theta) = -E\left[\frac{\partial^2}{\partial\theta^2}\log L(\theta)\right]$
+
+### Chapter 15: 迴歸分析 {#sec-regression}
+
+用偏微分推導迴歸係數，理解為什麼 OLS 和 MLE 在常態假設下等價。
+
+**關鍵概念**：
+
+- 殘差平方和最小化：$\frac{\partial}{\partial\beta} SSR = 0$
+- Logistic regression 的 log-odds 和微分
+- 多元迴歸的偏微分
+
+### Chapter 16: 存活分析 {#sec-survival}
+
+時間到事件資料的微積分處理，理解 hazard 的瞬時概念。
+
+**關鍵概念**：
+
+- Survival function: $S(t) = 1 - F(t)$
+- Hazard function: $h(t) = \frac{f(t)}{S(t)} = -\frac{d}{dt}\log S(t)$
+- Cumulative hazard: $H(t) = \int_0^t h(u)du$
+
+### Chapter 17: 貝氏統計 {#sec-bayesian}
+
+用積分更新機率信念，理解共軛先驗的數學原理。
+
+**關鍵概念**：
+
+- 貝氏定理的連續版本：$p(\theta|x) = \frac{p(x|\theta)p(\theta)}{\int p(x|\theta)p(\theta)d\theta}$
+- Prior × Likelihood → Posterior
+- Beta-Binomial 的共軛關係
+
+## 學習目標
+
+完成本部分後，你將能夠：
+
+✅ 理解機率分布的微積分基礎
+✅ 用微分推導 MLE 估計值
+✅ 理解迴歸係數的數學來源
+✅ 掌握存活分析的 hazard 概念
+✅ 理解貝氏更新的積分過程
+
+## 學習建議
+
+這五章是全書的**高潮**，將前面學的所有微積分工具整合應用。建議：
+
+1. **不要急**：這些章節資訊密度高，需要時間消化
+2. **動手做**：每個 R 範例都實際執行，修改參數觀察變化
+3. **連結前面章節**：看到微分/積分時，回想前面學的概念
+4. **重視視覺化**：圖形比公式更能幫助理解
+
+讓我們開始這趟統計應用的旅程！

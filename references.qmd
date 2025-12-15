@@ -1,0 +1,59 @@
+---
+title: "參考文獻"
+---
+
+本書參考的主要文獻與延伸閱讀資源列於下方。
+
+## 統計學經典教材
+
+1. Casella, G., & Berger, R. L. (2002). *Statistical Inference* (2nd ed.). Duxbury Press.
+
+2. Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., & Rubin, D. B. (2013). *Bayesian Data Analysis* (3rd ed.). Chapman and Hall/CRC.
+
+3. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
+
+## 醫學統計專書
+
+4. Collett, D. (2015). *Modelling Survival Data in Medical Research* (3rd ed.). Chapman and Hall/CRC.
+
+5. Hosmer, D. W., Lemeshow, S., & May, S. (2008). *Applied Survival Analysis: Regression Modeling of Time-to-Event Data* (2nd ed.). Wiley.
+
+6. Armitage, P., Berry, G., & Matthews, J. N. S. (2001). *Statistical Methods in Medical Research* (4th ed.). Blackwell Science.
+
+## 微積分教材
+
+7. Stewart, J. (2015). *Calculus: Early Transcendentals* (8th ed.). Cengage Learning.
+
+8. Thomas, G. B., Weir, M. D., & Hass, J. R. (2018). *Thomas' Calculus* (14th ed.). Pearson.
+
+## R 語言與資料視覺化
+
+9. Wickham, H., & Grolemund, G. (2016). *R for Data Science: Import, Tidy, Transform, Visualize, and Model Data*. O'Reilly Media.
+
+10. Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis* (2nd ed.). Springer.
+
+11. Chang, W. (2018). *R Graphics Cookbook: Practical Recipes for Visualizing Data* (2nd ed.). O'Reilly Media.
+
+## 線上資源
+
+12. ggplot2 官方文件：[https://ggplot2.tidyverse.org/](https://ggplot2.tidyverse.org/)
+
+13. R for Data Science 線上版：[https://r4ds.had.co.nz/](https://r4ds.had.co.nz/)
+
+14. The Comprehensive R Archive Network (CRAN)：[https://cran.r-project.org/](https://cran.r-project.org/)
+
+15. Quarto 官方文件：[https://quarto.org/](https://quarto.org/)
+
+## 統計軟體與工具
+
+16. R Core Team (2024). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria.
+
+17. RStudio Team (2024). *RStudio: Integrated Development Environment for R*. Posit Software, PBC, Boston, MA.
+
+## 補充讀物
+
+18. McElreath, R. (2020). *Statistical Rethinking: A Bayesian Course with Examples in R and Stan* (2nd ed.). CRC Press.
+
+19. Kleinbaum, D. G., & Klein, M. (2012). *Survival Analysis: A Self-Learning Text* (3rd ed.). Springer.
+
+20. Rosner, B. (2015). *Fundamentals of Biostatistics* (8th ed.). Cengage Learning.
