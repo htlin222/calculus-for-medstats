@@ -403,7 +403,7 @@ p1 / p2 +
 **統計意義**：
 
 - Logistic function 將實數映射到 $(0, 1)$，可解釋為機率
-- 導數 $p'(x) = p(1-p)$ 在 MLE 推導中非常重要
+- 導數 $p'(x) = p(1-p)$ 在 MLE 推導中非常重要[@casella2002statistical]
 - 最大變化率發生在 $p=0.5$ 時
 
 ### 2. PDF 和 CDF 的關係
@@ -466,9 +466,22 @@ p1 / p2 +
 
 1. 用自己的話解釋：為什麼連鎖律叫做 "chain" rule？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+因為連鎖律處理的是「函數套函數」的情況，就像一個鏈條（chain）一樣，一環扣一環。外層函數的變化會影響內層函數，內層函數的變化又來自於 x 的變化，這些變化像鏈條一樣連接起來。在數學表達上就是 $\frac{dy}{dx} = \frac{dy}{du} \cdot \frac{du}{dx}$，中間的 du 像「約分」一樣串連起來。
+:::
+
 2. 為什麼 PDF 是 CDF 的導數？這在統計上代表什麼意義？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+CDF 定義為 $F(x) = \int_{-\infty}^{x} f(t)dt$，根據微積分基本定理，積分的導數就是被積分的函數本身，所以 $f(x) = F'(x)$。統計意義是：PDF 代表「瞬時機率密度」，反映 CDF 在某點的變化率。CDF 變化快的地方（斜率大），PDF 值就大，代表該區域出現的機率密度高。
+:::
+
+
 3. Logistic function 的導數 $p'(x) = p(1-p)$ 在 $p=0$ 和 $p=1$ 時都是 0，這代表什麼？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+這代表當機率接近 0 或 1 時，logistic function 的變化率趨近於 0，也就是曲線趨於平坦。從圖形上看，logistic function 是 S 型曲線，兩端漸近於 0 和 1，變化很慢；而在中間 $p=0.5$ 的地方變化最快（導數最大）。這反映了一個重要的統計直覺：當結果幾乎確定時（接近 0% 或 100%），再增加一點 x 值也很難改變機率。
+:::
 
 ### 計算題
 
@@ -477,9 +490,34 @@ p1 / p2 +
    b. $g(x) = (2x + 1)^5$
    c. $h(x) = e^{-2x}$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+a. $f'(x) = 12x^3 - 4x$（使用冪次規則和和差規則）
+
+b. $g'(x) = 5(2x+1)^4 \cdot 2 = 10(2x+1)^4$（使用連鎖律）
+
+c. $h'(x) = e^{-2x} \cdot (-2) = -2e^{-2x}$（使用連鎖律，外層是 $e^u$，內層是 $u=-2x$）
+:::
+
 5. 使用乘法規則計算：$\frac{d}{dx}(x^2 \ln x)$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+使用乘法規則：$\frac{d}{dx}[f \cdot g] = f' \cdot g + f \cdot g'$
+
+令 $f = x^2$，$g = \ln x$，則 $f' = 2x$，$g' = \frac{1}{x}$
+
+因此：$\frac{d}{dx}(x^2 \ln x) = 2x \cdot \ln x + x^2 \cdot \frac{1}{x} = 2x\ln x + x$
+:::
+
 6. 使用除法規則計算：$\frac{d}{dx}\left(\frac{x^2}{x+1}\right)$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+使用除法規則：$\frac{d}{dx}\left[\frac{f}{g}\right] = \frac{f' \cdot g - f \cdot g'}{g^2}$
+
+令 $f = x^2$，$g = x+1$，則 $f' = 2x$，$g' = 1$
+
+因此：$\frac{d}{dx}\left(\frac{x^2}{x+1}\right) = \frac{2x(x+1) - x^2 \cdot 1}{(x+1)^2} = \frac{2x^2+2x-x^2}{(x+1)^2} = \frac{x^2+2x}{(x+1)^2} = \frac{x(x+2)}{(x+1)^2}$
+:::
+
 
 ### R 操作題
 
@@ -493,7 +531,69 @@ f <- function(x) sin(x^2)
 f_prime <- function(x) 2*x * cos(x^2)  # 連鎖律
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+使用連鎖律：外層函數是 $\sin(u)$，內層是 $u=x^2$
+
+$\frac{d}{dx}\sin(x^2) = \cos(x^2) \cdot 2x = 2x\cos(x^2)$
+
+完整程式碼：
+```r
+library(ggplot2)
+library(patchwork)
+
+x <- seq(-3, 3, by = 0.01)
+f <- sin(x^2)
+f_prime <- 2*x * cos(x^2)
+
+df <- data.frame(x, f, f_prime)
+
+p1 <- ggplot(df, aes(x, f)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  labs(title = expression(f(x) == sin(x^2)), y = "f(x)") +
+  theme_minimal()
+
+p2 <- ggplot(df, aes(x, f_prime)) +
+  geom_line(color = "#E94F37", linewidth = 1.2) +
+  labs(title = expression(f*"'"*(x) == 2*x %.% cos(x^2)), y = "f'(x)") +
+  theme_minimal()
+
+p1 / p2
+```
+:::
+
 8. 驗證 logistic function 的導數公式：計算 $p'(0)$ 的理論值和數值近似值，比較差異。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+理論值：$p(0) = \frac{1}{1+e^0} = 0.5$，所以 $p'(0) = p(0)(1-p(0)) = 0.5 \times 0.5 = 0.25$
+
+數值近似（使用導數定義）：
+```r
+# Logistic function
+p <- function(x) 1 / (1 + exp(-x))
+
+# 理論導數
+p_deriv_theory <- function(x) {
+  px <- p(x)
+  px * (1 - px)
+}
+
+# 數值近似導數
+p_deriv_numeric <- function(x, h = 1e-8) {
+  (p(x + h) - p(x)) / h
+}
+
+# 在 x=0 處比較
+theory_val <- p_deriv_theory(0)
+numeric_val <- p_deriv_numeric(0)
+
+cat("理論值:", theory_val, "\n")
+cat("數值近似值:", numeric_val, "\n")
+cat("差異:", abs(theory_val - numeric_val), "\n")
+```
+
+結果應該非常接近，差異小於 $10^{-8}$。
+:::
+
 
 ## 本章重點整理 {.unnumbered}
 

@@ -19,7 +19,7 @@ source(here::here("R/_common.R"))
 
 在前面的章節，我們處理的都是**有限區間**的積分：$\int_a^b f(x)dx$，其中 $a, b$ 都是有限數值。
 
-但在統計學中，我們經常遇到：
+但在統計學中，我們經常遇到 [@stewart2015calculus; @wackerly2008mathematical]：
 
 - 積分範圍到**無窮大**：$\int_0^{\infty} f(x)dx$
 - 積分範圍從**負無窮到正無窮**：$\int_{-\infty}^{\infty} f(x)dx$
@@ -136,7 +136,7 @@ p1 + p2 +
 
 ### 為什麼總面積必須等於 1？
 
-對於任意機率密度函數 $f(x)$：
+對於任意機率密度函數 $f(x)$ [@casella2002statistical; @degroot2012probability]：
 
 $$\int_{-\infty}^{\infty} f(x)dx = 1$$
 
@@ -335,7 +335,7 @@ ggplot() +
 
 ### 定義
 
-**存活函數 (Survival Function)**：
+**存活函數 (Survival Function)** [@collett2015modelling; @klein2003survival]：
 
 $$S(t) = P(T > t) = \int_t^{\infty} f(x)dx$$
 
@@ -422,7 +422,7 @@ cat("pexp 計算:", round(S_pexp, 5), "\n")
 
 ### 醫學意義
 
-在**存活分析 (Survival Analysis)** 中：
+在**存活分析 (Survival Analysis)** 中 [@collett2015modelling; @klein2003survival]：
 
 - $S(t)$：病患在時間 $t$ 仍存活的機率
 - $h(t)$：hazard function，瞬時死亡風險
@@ -488,8 +488,23 @@ p4 <- create_p_plot(2, "收斂")
 ### 觀念題
 
 1. 為什麼所有的機率密度函數都必須滿足 $\int_{-\infty}^{\infty} f(x)dx = 1$？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+因為機率密度函數描述的是機率的分布，而所有可能結果的機率總和必須是 100%（即 1）。這個積分代表「所有可能的 x 值」發生的總機率，根據機率公理必須等於 1。如果不等於 1，就不是合法的機率分布。
+:::
+
 2. 說明「收斂」與「發散」的差別。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+收斂 (Convergent) 表示瑕積分的極限存在且為有限值，意味著即使積分範圍延伸到無窮大，曲線下的總面積仍是有限的。發散 (Divergent) 則表示極限不存在或為無窮大，代表總面積是無限的。例如：$\int_1^{\infty} \frac{1}{x^2}dx = 1$（收斂），但 $\int_1^{\infty} \frac{1}{x}dx = \infty$（發散）。
+:::
+
 3. 為什麼 $\int_1^{\infty} \frac{1}{x}dx$ 發散，但 $\int_1^{\infty} \frac{1}{x^2}dx$ 收斂？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+關鍵在於函數下降的速度。$\frac{1}{x^2}$ 下降得比 $\frac{1}{x}$ 快得多，使得其尾端面積快速縮小到可忽略。根據 p-test，$\int_1^{\infty} \frac{1}{x^p}dx$ 只有在 $p > 1$ 時才收斂。當 $p=1$ 時函數下降得不夠快，導致面積累積到無窮大；而 $p=2$ 時下降夠快，總面積收斂到 1。
+:::
+
 
 ### 計算題
 
@@ -507,7 +522,35 @@ p4 <- create_p_plot(2, "收斂")
 integrate(function(x) exp(-x), lower = 0, upper = Inf)
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+**a.** 收斂，值為 1。計算：$\int_0^{\infty} e^{-x}dx = \lim_{b \to \infty} [-e^{-x}]_0^b = \lim_{b \to \infty} (-e^{-b} + 1) = 1$
+
+**b.** 收斂，值為 1/2。計算：$\int_1^{\infty} \frac{1}{x^3}dx = \lim_{b \to \infty} [-\frac{1}{2x^2}]_1^b = \lim_{b \to \infty} (-\frac{1}{2b^2} + \frac{1}{2}) = \frac{1}{2}$
+
+**c.** 收斂，值為 $\pi/2$。這是 $\arctan(x)$ 的導數，所以 $\int_0^{\infty} \frac{1}{1+x^2}dx = \lim_{b \to \infty} [\arctan(x)]_0^b = \frac{\pi}{2} - 0 = \frac{\pi}{2}$
+
+可用 R 驗證：`integrate(function(x) 1/(1+x^2), 0, Inf)$value` 約為 1.571（即 $\pi/2$）
+:::
+
 5. 驗證 Gamma 分布 $f(x) = \frac{\lambda^\alpha}{\Gamma(\alpha)} x^{\alpha-1} e^{-\lambda x}$ 的總面積是否為 1（用 R，設 $\alpha = 2$, $\lambda = 1$）。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+alpha <- 2
+lambda <- 1
+f <- function(x) dgamma(x, shape = alpha, rate = lambda)
+area <- integrate(f, lower = 0, upper = Inf)$value
+# area 應該等於 1.000000
+
+# 或直接用公式
+f_manual <- function(x) {
+  (lambda^alpha / gamma(alpha)) * x^(alpha-1) * exp(-lambda * x)
+}
+integrate(f_manual, 0, Inf)$value  # 也是 1
+```
+結果確實為 1，驗證了 Gamma 分布是合法的機率密度函數。
+:::
+
 
 ### R 操作題
 
@@ -523,6 +566,10 @@ f <- function(x) x * dcauchy(x)
 integrate(f, lower = -Inf, upper = Inf)
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+R 會回報錯誤或警告訊息，因為這個積分**不收斂**（發散）！Cauchy 分布是一個特殊的例子，雖然它是合法的機率分布（總面積 = 1），但它的期望值不存在。原因是 $\frac{x}{1+x^2}$ 在尾端下降得不夠快，導致 $\int x \cdot f(x)dx$ 發散。這告訴我們：即使是合法的機率分布，也可能沒有有限的期望值！這在統計學中是很重要的反例。
+:::
+
 7. 繪製 Weibull 分布的存活函數：
 
 $$S(t) = \exp\left(-\left(\frac{t}{\lambda}\right)^k\right)$$
@@ -533,6 +580,32 @@ $$S(t) = \exp\left(-\left(\frac{t}{\lambda}\right)^k\right)$$
 #| eval: false
 pweibull(t, shape = k, scale = lambda, lower.tail = FALSE)  # S(t)
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+library(ggplot2)
+
+lambda <- 2
+k <- 1.5
+
+# 中位存活時間：解 S(t) = 0.5
+median_time <- lambda * (-log(0.5))^(1/k)  # ≈ 1.637
+
+t <- seq(0, 6, by = 0.01)
+S_t <- pweibull(t, shape = k, scale = lambda, lower.tail = FALSE)
+
+ggplot(data.frame(t, S_t), aes(t, S_t)) +
+  geom_line(color = "#2E86AB", linewidth = 1.2) +
+  geom_hline(yintercept = 0.5, linetype = "dashed", color = "gray50") +
+  geom_vline(xintercept = median_time, linetype = "dashed", color = "#E94F37") +
+  geom_point(aes(x = median_time, y = 0.5), color = "#E94F37", size = 3) +
+  annotate("text", x = median_time + 0.3, y = 0.5,
+           label = paste0("中位存活時間 = ", round(median_time, 2)), hjust = 0) +
+  labs(title = "Weibull 存活函數", x = "時間 t", y = "S(t)") +
+  theme_minimal()
+```
+:::
+
 
 ## 本章重點整理 {.unnumbered}
 

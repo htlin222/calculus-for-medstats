@@ -532,18 +532,44 @@ ggplot() +
 
 1. 用自己的話解釋：為什麼極值點的導數是 0？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+導數代表函數的瞬時變化率（切線斜率）。在極值點（山頂或谷底），函數暫時停止上升或下降，切線是水平的，所以斜率為 0。就像爬山到山頂時，那一瞬間既不上坡也不下坡。
+:::
+
 2. 如果 $f'(c) = 0$ 且 $f''(c) = 0$，我們能判斷 $c$ 是極大還是極小嗎？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+不能。二階導數檢定在 $f''(c) = 0$ 時失效，無法判斷。例如 $f(x) = x^4$ 在 $x=0$ 處是極小值，但 $f(x) = -x^4$ 在 $x=0$ 處是極大值，兩者的 $f'(0) = f''(0) = 0$ 都成立。此時需要用更高階的導數或其他方法判斷。
+:::
+
 3. 在 MLE 中，為什麼要「最大化」log-likelihood？在 OLS 中，為什麼要「最小化」RSS？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+MLE 要找「最能解釋觀察到的資料」的參數值，所以要讓 likelihood（資料出現的機率）越大越好。OLS 要找「預測誤差最小」的迴歸線，所以要讓殘差平方和越小越好。兩者都是最佳化問題，只是目標函數的方向不同：一個求最大值，一個求最小值。
+:::
+
 
 ### 計算題
 
 4. 找出 $f(x) = x^4 - 4x^3$ 的極值點，並判斷是極大還是極小。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+**步驟**：$f'(x) = 4x^3 - 12x^2 = 4x^2(x-3) = 0$ → $x = 0$ 或 $x = 3$。$f''(x) = 12x^2 - 24x$。在 $x=0$：$f''(0) = 0$（無法判斷）。在 $x=3$：$f''(3) = 108 - 72 = 36 > 0$ → **極小值**，$f(3) = -27$。$x=0$ 實際上是反曲點，不是極值。
+:::
+
 5. 假設 $X_1, \ldots, X_n \sim \text{Exp}(\lambda)$（指數分布），推導 $\lambda$ 的 MLE。
    提示：$f(x; \lambda) = \lambda e^{-\lambda x}$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+Log-likelihood: $\ell(\lambda) = \sum_{i=1}^n \ln(\lambda e^{-\lambda x_i}) = n\ln\lambda - \lambda\sum_{i=1}^n x_i$。微分：$\frac{d\ell}{d\lambda} = \frac{n}{\lambda} - \sum_{i=1}^n x_i$。令其為 0：$\frac{n}{\lambda} = \sum_{i=1}^n x_i$ → $\hat{\lambda}_{\text{MLE}} = \frac{n}{\sum_{i=1}^n x_i} = \frac{1}{\bar{x}}$。
+:::
+
 6. 使用二階導數檢定，驗證 $\hat{\mu}_{\text{MLE}} = \bar{x}$ 確實是最大值（不是最小值）。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+從本章推導：$\frac{d\ell}{d\mu} = \frac{1}{\sigma^2}\sum_{i=1}^n (x_i - \mu)$。二階導數：$\frac{d^2\ell}{d\mu^2} = -\frac{n}{\sigma^2} < 0$（恆負）。因為 $f''(\mu) < 0$，曲線凹向下，所以 $\hat{\mu} = \bar{x}$ 確實是極大值！
+:::
+
 
 ### R 操作題
 
@@ -564,7 +590,26 @@ for (i in 1:___) {
 }
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+f <- function(x) x^2 - 4*x + 5
+f_prime <- function(x) 2*x - 4
+
+x <- 0
+alpha <- 0.1
+for (i in 1:20) {
+  x <- x - alpha * f_prime(x)
+  print(paste("Iteration", i, ": x =", round(x, 4), ", f(x) =", round(f(x), 4)))
+}
+```
+理論上最小值在 $x=2$，$f(2)=1$。梯度下降會逐步收斂到這個值。
+:::
+
 8. 用視覺化比較不同學習率 $\alpha$ 對梯度下降收斂速度的影響。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+可以嘗試 $\alpha = 0.01, 0.1, 0.5, 0.9$ 等不同值。太小的學習率收斂很慢，太大的學習率可能震盪或發散。建議用 `patchwork` 將不同 $\alpha$ 的收斂路徑並排比較，觀察步數和穩定性的差異。最佳學習率通常需要實驗調整。
+:::
 
 ## 本章重點整理 {.unnumbered}
 

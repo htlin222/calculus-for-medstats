@@ -38,7 +38,7 @@ $$\int f(x)dx = F(x) + C$$
 
 $$\int_a^b f(x)dx = F(b) - F(a)$$
 
-這就是**微積分基本定理 (Fundamental Theorem of Calculus)**！
+這就是**微積分基本定理 (Fundamental Theorem of Calculus)** [@stewart2015calculus; @thomas2018calculus]！
 
 ### 常用積分公式表
 
@@ -326,7 +326,7 @@ ggplot(df) +
 
 ### 期望值的積分定義
 
-對於連續型隨機變數 $X$：
+對於連續型隨機變數 $X$ [@casella2002statistical; @degroot2012probability]：
 
 $$E(X) = \int_{-\infty}^{\infty} x \cdot f(x)dx$$
 
@@ -376,8 +376,21 @@ cat("理論變異數:", 1, "\n")
 ### 觀念題
 
 1. 為什麼 $\int x^{-1}dx = \ln|x| + C$ 而不是 $\frac{x^0}{0}$？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+因為冪次積分公式 $\int x^n dx = \frac{x^{n+1}}{n+1} + C$ 只在 $n \neq -1$ 時有效。當 $n = -1$ 時，分母會變成 0，所以這個公式不適用。$\frac{1}{x}$ 是一個特殊情況，它的反導數是 $\ln|x|$（可以驗證：$\frac{d}{dx}\ln|x| = \frac{1}{x}$）。
+:::
+
 2. 說明「換元積分法」與「連鎖律」的關係。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+換元積分法是連鎖律的反向操作。連鎖律告訴我們如何微分複合函數：$\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)$。反過來，當我們看到積分 $\int f'(g(x)) \cdot g'(x)dx$ 時，就可以用換元法令 $u = g(x)$，使積分變簡單。這就像「解開」連鎖律的過程。
+:::
 3. 為什麼對稱分布的期望值等於對稱中心？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+如果 PDF $f(x)$ 對稱於 $x = \mu$，則對於對稱中心兩側相同距離的點，它們的機率密度相同。在計算 $E(X) = \int x \cdot f(x)dx$ 時，對稱中心左側的負偏離值（$x < \mu$）和右側的正偏離值（$x > \mu$）會完全抵消，最後只剩下對稱中心 $\mu$。標準常態分布 $N(0,1)$ 就是最好的例子：對稱於 0，所以 $E(X) = 0$。
+:::
 
 ### 計算題
 
@@ -395,9 +408,25 @@ cat("理論變異數:", 1, "\n")
 integrate(function(x) 3*x^2 + 2*x, lower = 0, upper = 1)
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+**a.** $\int_0^1 (3x^2 + 2x)dx = [x^3 + x^2]_0^1 = (1 + 1) - (0 + 0) = 2$
+
+**b.** $\int_1^2 \frac{1}{x}dx = [\ln|x|]_1^2 = \ln 2 - \ln 1 = \ln 2 \approx 0.693$
+
+**c.** $\int_0^1 e^{2x}dx = [\frac{1}{2}e^{2x}]_0^1 = \frac{1}{2}(e^2 - e^0) = \frac{e^2 - 1}{2} \approx 3.195$
+
+用 R 驗證各題的積分值應該與手算結果一致。
+:::
+
 5. 驗證均勻分布 $U(0, 1)$ 的期望值是 $\frac{1}{2}$：
 
 $$E(X) = \int_0^1 x \cdot 1 \, dx$$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+$$E(X) = \int_0^1 x \cdot 1 \, dx = \left[\frac{x^2}{2}\right]_0^1 = \frac{1}{2} - 0 = \frac{1}{2}$$
+
+這證明了均勻分布的期望值恰好在區間的中點。用 R 驗證：`integrate(function(x) x, lower = 0, upper = 1)` 應該得到 0.5。
+:::
 
 ### R 操作題
 
@@ -409,6 +438,10 @@ f <- function(x) x^4 * dnorm(x)
 integrate(f, lower = -Inf, upper = Inf)
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+執行程式碼後應該得到接近 3 的結果。這是標準常態分布的重要性質：$E(X^4) = 3$。這個值在統計學中用來計算峰度 (kurtosis)。你也可以用模擬驗證：`mean(rnorm(100000)^4)` 應該也接近 3。
+:::
+
 7. 繪製 Beta 分布 $\text{Beta}(2, 5)$ 的 PDF，並計算其期望值：
 
 $$E(X) = \int_0^1 x \cdot f(x)dx$$
@@ -419,6 +452,18 @@ $$E(X) = \int_0^1 x \cdot f(x)dx$$
 #| eval: false
 dbeta(x, shape1 = 2, shape2 = 5)  # PDF
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+先繪製 Beta(2,5) 的 PDF，然後用積分計算期望值。程式碼範例：
+```r
+# 計算期望值
+f <- function(x) x * dbeta(x, shape1 = 2, shape2 = 5)
+E_X <- integrate(f, lower = 0, upper = 1)$value
+# 理論值
+theoretical <- 2 / (2 + 5)
+```
+應該得到 $E(X) \approx 0.286 = \frac{2}{7}$，與理論公式完全吻合。Beta 分布常用於貝氏統計的先驗分布。
+:::
 
 ## 本章重點整理 {.unnumbered}
 

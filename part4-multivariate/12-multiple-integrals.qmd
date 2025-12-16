@@ -87,7 +87,7 @@ plot_ly(
   )
 ```
 
-**關鍵理解**：
+**關鍵理解** [@thomas2018calculus]：
 
 - **單重積分**：$\int f(x) dx$ = 1D 曲線下的 **2D 面積**
 - **雙重積分**：$\iint f(x,y) dx dy$ = 2D 曲面下的 **3D 體積**
@@ -151,7 +151,7 @@ cat("解析解 = 15\n")
 
 ### 積分順序可交換嗎？
 
-**Fubini's Theorem**：如果函數在矩形區域上連續，則積分順序可交換：
+**Fubini's Theorem** [@casella2002statistical]：如果函數在矩形區域上連續，則積分順序可交換：
 
 $$\int_a^b \int_c^d f(x, y) \, dy \, dx = \int_c^d \int_a^b f(x, y) \, dx \, dy$$
 
@@ -186,7 +186,7 @@ cat("結果相同！\n")
 
 ### 聯合機率密度函數 (Joint PDF)
 
-兩個連續隨機變數 $X$ 和 $Y$ 的**聯合 PDF** $f(x, y)$ 滿足：
+兩個連續隨機變數 $X$ 和 $Y$ 的**聯合 PDF** $f(x, y)$ 滿足 [@casella2002statistical]：
 
 $$\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} f(x, y) \, dx \, dy = 1$$
 
@@ -279,7 +279,7 @@ cat("P(X + Y < 0.5) =", round(prob, 4), "\n")
 
 ### 邊際分布的定義
 
-給定聯合 PDF $f(x, y)$，**邊際分布**是「積分掉」另一個變數：
+給定聯合 PDF $f(x, y)$，**邊際分布**是「積分掉」另一個變數 [@bishop2006pattern]：
 
 $$f_X(x) = \int_{-\infty}^{\infty} f(x, y) \, dy$$
 
@@ -289,7 +289,7 @@ $$f_Y(y) = \int_{-\infty}^{\infty} f(x, y) \, dx$$
 
 ### 範例：雙變量常態分布
 
-標準雙變量常態（$\rho = 0$，獨立情況）：
+標準雙變量常態（$\rho = 0$，獨立情況） [@murphy2012machine]：
 
 $$f(x, y) = \frac{1}{2\pi} e^{-\frac{x^2 + y^2}{2}}$$
 
@@ -408,6 +408,8 @@ p1 + p2
 
 $$E[g(X, Y)] = \int_{-\infty}^{\infty} \int_{-\infty}^{\infty} g(x, y) \cdot f(x, y) \, dx \, dy$$
 
+[@casella2002statistical]
+
 **特殊情況**：
 
 - $E[X] = \int \int x \cdot f(x, y) \, dx \, dy$
@@ -469,7 +471,7 @@ ggplot(data_all, aes(X, Y)) +
 
 ### 條件機率密度函數
 
-給定 $Y = y$，$X$ 的**條件分布**：
+給定 $Y = y$，$X$ 的**條件分布** [@casella2002statistical]：
 
 $$f_{X|Y}(x|y) = \frac{f(x, y)}{f_Y(y)}$$
 
@@ -480,7 +482,7 @@ $$f_{X|Y}(x|y) = \frac{f(x, y)}{f_Y(y)}$$
 
 ### 範例：雙變量常態的條件分布
 
-對於雙變量常態 $(X, Y) \sim N(\mu, \Sigma)$，給定 $Y = y$，則：
+對於雙變量常態 $(X, Y) \sim N(\mu, \Sigma)$，給定 $Y = y$，則 [@bishop2006pattern]：
 
 $$X | Y = y \sim N\left(\mu_X + \rho \frac{\sigma_X}{\sigma_Y}(y - \mu_Y), \sigma_X^2(1 - \rho^2)\right)$$
 
@@ -547,7 +549,7 @@ p1 + p2
 
 ### 後驗分布的計算
 
-貝氏定理的連續版本：
+貝氏定理的連續版本 [@gelman2013bayesian]：
 
 $$p(\theta | \text{data}) = \frac{p(\text{data} | \theta) \cdot p(\theta)}{p(\text{data})}$$
 
@@ -559,7 +561,7 @@ $$p(\text{data}) = \int p(\text{data} | \theta) \cdot p(\theta) \, d\theta$$
 
 ### 範例：Beta-Binomial 模型
 
-**設定**：
+**設定** [@mcelreath2020statistical]：
 
 - Prior: $\theta \sim \text{Beta}(\alpha, \beta)$
 - Likelihood: $X | \theta \sim \text{Binomial}(n, \theta)$
@@ -744,11 +746,27 @@ ggplot(grid, aes(x, y, fill = density)) +
 
 1. 用自己的話解釋：雙重積分代表什麼？跟單重積分有什麼不同？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+單重積分代表「曲線下的面積」（2D），而雙重積分代表「曲面下的體積」（3D）。單重積分對一個變數積分，雙重積分對兩個變數分別積分。在統計上，單重積分用於計算單一隨機變數的機率，雙重積分則用於計算兩個隨機變數的聯合機率。
+:::
+
 2. 什麼情況下積分順序可以交換？為什麼這很重要？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+根據 Fubini's Theorem，當函數在矩形區域上連續時，積分順序可以交換。這很重要因為有些積分在某個順序下很難計算，但換個順序可能變得簡單許多。在統計應用中，這讓我們可以靈活選擇計算邊際分布或期望值的方式。
+:::
 
 3. 邊際分布與聯合分布的關係是什麼？用積分表示。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+邊際分布是將聯合分布「積分掉」另一個變數得到的。數學上：$f_X(x) = \int_{-\infty}^{\infty} f(x, y) \, dy$ 和 $f_Y(y) = \int_{-\infty}^{\infty} f(x, y) \, dx$。這代表當我們不關心另一個變數的值時，對所有可能值積分後得到的單一變數分布。
+:::
+
 4. 為什麼貝氏統計需要用到積分？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+貝氏統計需要計算邊際概似 (marginal likelihood) 來標準化後驗分布：$p(\text{data}) = \int p(\text{data} | \theta) \cdot p(\theta) \, d\theta$。這個積分確保後驗分布的總機率為 1。在多參數情況下，還需要多重積分來處理參數的聯合分布。
+:::
 
 ### 計算題
 
@@ -758,6 +776,12 @@ ggplot(grid, aes(x, y, fill = density)) +
 
    b. $\int_0^{\pi} \int_0^{\pi} \sin(x) \cos(y) \, dx \, dy$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+a. 先對 $y$ 積分：$\int_0^2 (3x + 2y) dy = [3xy + y^2]_0^2 = 6x + 4$。再對 $x$ 積分：$\int_0^1 (6x + 4) dx = [3x^2 + 4x]_0^1 = 7$。
+
+b. 利用 $\sin(x)\cos(y)$ 可分離：$\int_0^{\pi} \sin(x) dx \cdot \int_0^{\pi} \cos(y) dy = [-\cos(x)]_0^{\pi} \cdot [\sin(y)]_0^{\pi} = 2 \cdot 0 = 0$。
+:::
+
 6. 給定聯合 PDF：
 
    $$f(x, y) = \begin{cases} 2 & 0 \le x \le 1, 0 \le y \le x \\ 0 & \text{otherwise} \end{cases}$$
@@ -765,6 +789,14 @@ ggplot(grid, aes(x, y, fill = density)) +
    a. 驗證這是合法的 PDF（積分 = 1）
    b. 計算 $P(X + Y < 1)$
    c. 求邊際分布 $f_X(x)$ 和 $f_Y(y)$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+a. $\int_0^1 \int_0^x 2 \, dy \, dx = \int_0^1 2x \, dx = [x^2]_0^1 = 1$ ✓
+
+b. 在三角形區域內，$x + y < 1$ 的部分需要分段：當 $0 \le x \le 0.5$ 時 $y$ 範圍是 $[0, x]$；當 $0.5 < x \le 1$ 時 $y$ 範圍是 $[0, 1-x]$。計算得 $P(X + Y < 1) = 0.125$（如本章範例）。
+
+c. $f_X(x) = \int_0^x 2 \, dy = 2x$ (for $0 \le x \le 1$)；$f_Y(y) = \int_y^1 2 \, dx = 2(1-y)$ (for $0 \le y \le 1$)。
+:::
 
 ### R 操作題
 
@@ -778,13 +810,29 @@ result <- integrate(dnorm, -Inf, Inf)
 result$value  # 應該 ≈ 1
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+執行上述程式碼會得到 `result$value` 非常接近 1（通常是 1.000000，誤差在數值積分的容許範圍內）。`integrate()` 函數使用自適應數值積分方法，在 `-Inf` 到 `Inf` 的範圍內準確計算定積分。這驗證了標準常態 PDF 滿足機率密度函數的基本性質。
+:::
+
 8. 繪製雙變量常態分布（$\rho = 0.6$）的 3D 圖和邊際分布。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+可參考本章「邊際分布」章節的程式碼範例，將相關係數改為 0.6：`Sigma <- matrix(c(1, 0.6, 0.6, 1), 2, 2)`。使用 `plotly` 繪製 3D 曲面圖，或使用 `ggplot2` 的 `geom_contour_filled()` 繪製等高線圖。邊際分布可透過 `dmvnorm()` 配合 `gridExtra` 套件組合顯示。
+:::
 
 ### 統計連結題
 
 9. 解釋為什麼「計算期望值」在多變量情況下需要用到雙重積分。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+期望值是「加權平均」的概念，權重是機率密度。在多變量情況下，函數 $g(X, Y)$ 的期望值需要對所有可能的 $(x, y)$ 組合計算：$E[g(X, Y)] = \iint g(x, y) \cdot f(x, y) \, dx \, dy$。這是二維空間的加權平均，因此需要雙重積分來涵蓋整個定義域。
+:::
+
 10. 在貝氏統計中，為什麼計算 $p(\text{data})$ 需要積分？這個積分在實務上好算嗎？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+邊際概似 $p(\text{data})$ 是「對所有可能的參數值積分」：$p(\text{data}) = \int p(\text{data} | \theta) p(\theta) \, d\theta$。這確保後驗分布是合法的機率分布（總和為 1）。實務上，這個積分通常很難計算，尤其在高維參數空間。因此常用共軛先驗（有解析解）或 MCMC 等數值方法來避免直接計算這個積分。
+:::
 
 ## 本章重點整理 {.unnumbered}
 

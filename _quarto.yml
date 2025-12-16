@@ -69,3 +69,4 @@ knitr:
       width: 80
 
 bibliography: references.bib
+csl: american-medical-association.csl

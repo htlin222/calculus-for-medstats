@@ -19,7 +19,7 @@ source(here::here("R/_common.R"))
 
 ### 存活分析的核心問題
 
-在醫學研究中，我們經常關心「病人能活多久？」這個問題。存活分析 (survival analysis) 就是用來回答這類時間相關問題的統計方法。
+在醫學研究中，我們經常關心「病人能活多久？」這個問題。存活分析 (survival analysis) 就是用來回答這類時間相關問題的統計方法[@collett2015modelling; @kleinbaum2012survival]。
 
 舉個例子：
 
@@ -513,15 +513,37 @@ ggplot(df, aes(t, h_t, color = scenario)) +
 
 1. **解釋差異**：Survival function $S(t)$ 與 cumulative distribution function $F(t)$ 有什麼關係？為什麼存活分析用 $S(t)$ 而不是 $F(t)$？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+$S(t) = 1 - F(t)$ 是互補關係。存活分析關注「還活著的機率」而非「已死亡的機率」，因此用 $S(t)$ 更直觀。此外，$S(t)$ 從 1 開始遞減至 0，更符合臨床思維：我們追蹤病人從健康到死亡的過程。
+:::
+
 2. **直觀理解**：為什麼 hazard function $h(t)$ 可以大於 1，但機率不行？用瞬時變化率的概念解釋。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+$h(t)$ 是「率」(rate) 而非機率。它代表單位時間內的瞬時風險，類似速度的概念。例如 $h(t) = 2$ 表示每單位時間有 200% 的風險率，這在數學上合理。相對地，機率必須介於 0 到 1 之間，因為它代表事件發生的可能性比例。
+:::
+
+
 3. **無記憶性**：指數分布有「無記憶性」。這在醫學上合理嗎？舉一個合適和一個不合適的例子。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+**合適**：某些突發事件（如車禍死亡）可能符合無記憶性，因為風險不隨年齡顯著改變。**不合適**：癌症或心臟病不符合，因為隨著年齡增長或病程進展，死亡風險會上升（需要 Weibull 分布，$\gamma > 1$）。
+:::
 
 4. **Shape 參數的意義**：
    - 如果 Weibull 分布的 shape 參數 $\gamma = 0.8$，這代表什麼？
    - 如果 $\gamma = 1.5$，這適合描述什麼疾病？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+$\gamma = 0.8 < 1$ 代表風險遞減，適合描述手術後早期併發症（早期高風險，之後下降）。$\gamma = 1.5 > 1$ 代表風險遞增，適合描述慢性退化性疾病（如癌症、器官衰竭），隨時間病情惡化，死亡風險上升。
+:::
+
 5. **微積分關係**：為什麼 $h(t) = -\frac{d}{dt}\ln S(t)$？用連鎖律 (chain rule) 證明這個等式。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+由 $h(t) = \frac{f(t)}{S(t)}$ 開始。因為 $f(t) = -S'(t)$（$S(t) = 1 - F(t)$ 的導數），所以 $h(t) = \frac{-S'(t)}{S(t)}$。根據連鎖律，$\frac{d}{dt}\ln S(t) = \frac{1}{S(t)} \cdot S'(t) = \frac{S'(t)}{S(t)}$，因此 $h(t) = -\frac{d}{dt}\ln S(t)$。
+:::
+
 
 ### 計算題
 
@@ -531,15 +553,28 @@ ggplot(df, aes(t, h_t, color = scenario)) +
    - (c) 求 hazard $h(t)$
    - (d) 用 R 驗證答案
 
+::: {.callout-tip collapse="true" title="參考答案"}
+(a) 指數分布的平均值 = $1/\lambda$，所以 $\lambda = 1/5 = 0.2$。(b) $S(3) = e^{-\lambda \cdot 3} = e^{-0.6} \approx 0.549$（約 55% 存活率）。(c) 指數分布的 hazard 是常數：$h(t) = \lambda = 0.2$。(d) R 驗證：`lambda <- 0.2; S_3 <- exp(-lambda * 3); S_3` 得到 0.5488。
+:::
+
 7. **Cumulative hazard 計算**：給定 $h(t) = 0.1t$（線性遞增），求：
    - (a) $H(5)$
    - (b) $S(5)$
    - (c) 中位存活時間（$S(t) = 0.5$ 的時間）
 
+::: {.callout-tip collapse="true" title="參考答案"}
+(a) $H(5) = \int_0^5 0.1t \, dt = 0.1 \cdot \frac{t^2}{2}\Big|_0^5 = 0.05 \times 25 = 1.25$。(b) $S(5) = e^{-H(5)} = e^{-1.25} \approx 0.287$。(c) 令 $S(t) = e^{-0.05t^2} = 0.5$，取對數：$-0.05t^2 = \ln(0.5) = -0.693$，所以 $t^2 = 13.86$，$t \approx 3.72$ 年。
+:::
+
 8. **從 Survival 推 Hazard**：如果 $S(t) = \frac{1}{1 + t}$（不是標準分布），求：
    - (a) $f(t)$
    - (b) $h(t)$
    - (c) $H(t)$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+(a) $f(t) = -S'(t) = -\frac{d}{dt}(1+t)^{-1} = (1+t)^{-2} = \frac{1}{(1+t)^2}$。(b) $h(t) = \frac{f(t)}{S(t)} = \frac{1/(1+t)^2}{1/(1+t)} = \frac{1}{1+t}$。(c) $H(t) = -\ln S(t) = -\ln\frac{1}{1+t} = \ln(1+t)$。驗證：$H'(t) = \frac{1}{1+t} = h(t)$ ✓
+:::
+
 
 ### R 操作題
 
@@ -555,6 +590,19 @@ survival_times <- rexp(n, rate = lambda)
 # TODO: 計算平均存活時間並與 1/lambda 比較
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+# 計算經驗存活曲線
+library(survival)
+km_fit <- survfit(Surv(survival_times) ~ 1)
+plot(km_fit, xlab = "時間", ylab = "S(t)", main = "經驗 vs 理論")
+# 加上理論曲線
+curve(exp(-lambda * x), add = TRUE, col = "red", lwd = 2)
+# 平均存活時間
+mean(survival_times)  # 應接近 1/lambda = 5
+```
+:::
+
 10. **比較兩個 Weibull 分布**：
 ```r
 # 修改程式碼，比較兩種治療的存活曲線
@@ -567,13 +615,26 @@ t <- seq(0, 10, by = 0.01)
 # TODO: 哪一個治療在早期較好？晚期呢？
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+# 治療 A 的曲線
+S_A <- pweibull(t, shape = 1.2, scale = 5, lower.tail = FALSE)
+h_A <- dweibull(t, 1.2, 5) / S_A
+# 治療 B 的曲線
+S_B <- pweibull(t, shape = 0.8, scale = 6, lower.tail = FALSE)
+h_B <- dweibull(t, 0.8, 6) / S_B
+# 比較：早期（t < 3）B 較好（S_B > S_A），晚期（t > 6）A 較好
+```
+:::
+
+
 ## 統計應用
 
 ### 1. Kaplan-Meier 估計量
 
 在實際研究中，我們通常無法觀察到所有人的完整存活時間（有些人還活著，或失聯）。這稱為**設限資料** (censored data)。
 
-Kaplan-Meier 估計量用來估計 survival function：
+Kaplan-Meier 估計量[@kaplan1958nonparametric]用來估計 survival function：
 
 $$\hat{S}(t) = \prod_{t_i \leq t} \left(1 - \frac{d_i}{n_i}\right)$$
 
@@ -586,7 +647,7 @@ $$\hat{S}(t) = \prod_{t_i \leq t} \left(1 - \frac{d_i}{n_i}\right)$$
 
 ### 2. Cox Proportional Hazards Model
 
-Cox 迴歸是存活分析中最常用的模型：
+Cox proportional hazards model [@cox1972regression]是存活分析中最常用的模型：
 
 $$h(t \mid X) = h_0(t) \exp(\beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p)$$
 

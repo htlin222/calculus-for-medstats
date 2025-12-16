@@ -19,7 +19,7 @@ source(here::here("R/_common.R"))
 
 ### 回顧：單變量函數
 
-在之前的章節，我們處理的都是 $y = f(x)$ 這種形式：
+在之前的章節，我們處理的都是 $y = f(x)$ 這種形式 [@stewart2015calculus]：
 
 - **Input**：一個變數 $x$（例如：劑量）
 - **Output**：一個變數 $y$（例如：血壓下降值）
@@ -49,7 +49,7 @@ ggplot(data.frame(dose, response), aes(dose, response)) +
 
 $$\text{血壓下降} = f(\text{劑量}, \text{年齡})$$
 
-這就是**多變量函數** (multivariate function)：
+這就是**多變量函數** (multivariate function) [@thomas2018calculus]：
 
 - **Input**：多個變數 $x, y, z, \ldots$
 - **Output**：一個變數 $z = f(x, y)$
@@ -373,7 +373,7 @@ ggplot(ll_grid, aes(mu, sigma, z = ll)) +
 
 ### 定義
 
-把所有偏微分組成一個向量，叫做**梯度** (gradient)：
+把所有偏微分組成一個向量，叫做**梯度** (gradient) [@bishop2006pattern]：
 
 $$\nabla f = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right)$$
 
@@ -381,7 +381,7 @@ $$\nabla f = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}
 
 ### 幾何意義
 
-**梯度向量指向函數上升最快的方向**
+**梯度向量指向函數上升最快的方向** [@murphy2012machine]
 
 ```{r}
 #| label: fig-gradient
@@ -435,7 +435,7 @@ ggplot(grid) +
 
 $$\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}$$
 
-我們要最小化**殘差平方和** (RSS)：
+我們要最小化**殘差平方和** (RSS) [@hastie2009elements]：
 
 $$\text{RSS}(\boldsymbol{\beta}) = \sum_{i=1}^n (y_i - \hat{y}_i)^2$$
 
@@ -449,7 +449,7 @@ $$\text{RSS}(\boldsymbol{\beta}) = \sum_{i=1}^n (y_i - \hat{y}_i)^2$$
 2. 令所有偏微分 = 0
 3. 解聯立方程組
 
-**結果**（矩陣形式）：
+**結果**（矩陣形式） [@casella2002statistical]：
 
 $$\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{Y}$$
 
@@ -499,7 +499,7 @@ ggplot(rss_grid, aes(b0, b1, z = rss)) +
 
 ### 問題設定
 
-假設我們要估計常態分布的**兩個參數** $\mu$ 和 $\sigma$：
+假設我們要估計常態分布的**兩個參數** $\mu$ 和 $\sigma$ [@casella2002statistical]：
 
 $$L(\mu, \sigma \mid x_1, \ldots, x_n) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x_i - \mu)^2}{2\sigma^2}}$$
 
@@ -509,7 +509,7 @@ $$\log L(\mu, \sigma) = -\frac{n}{2}\log(2\pi) - n\log\sigma - \frac{1}{2\sigma^
 
 ### 最大化過程
 
-**步驟**：
+**步驟** [@murphy2012machine]：
 
 1. 對 $\mu$ 偏微分，令 = 0
 2. 對 $\sigma$ 偏微分，令 = 0
@@ -554,7 +554,7 @@ plot_ly(
 
 ### 雙變量常態分布
 
-兩個變數 $X$ 和 $Y$ 的聯合機率密度函數：
+兩個變數 $X$ 和 $Y$ 的聯合機率密度函數 [@bishop2006pattern]：
 
 $$f(x, y) = \frac{1}{2\pi\sigma_X\sigma_Y\sqrt{1-\rho^2}} \exp\left(-\frac{1}{2(1-\rho^2)}\left[\frac{(x-\mu_X)^2}{\sigma_X^2} + \frac{(y-\mu_Y)^2}{\sigma_Y^2} - \frac{2\rho(x-\mu_X)(y-\mu_Y)}{\sigma_X\sigma_Y}\right]\right)$$
 
@@ -612,11 +612,27 @@ p4 <- plot_bivariate_normal(-0.7, "ρ = -0.7")
 
 1. 用自己的話解釋：什麼是「偏微分」？為什麼叫「偏」？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+偏微分就是「固定其他變數，只對一個變數做微分」。叫「偏」是因為我們只關注「偏向某一個方向」的變化率，而不是整體的變化。就像在曲面上只看 x 方向或 y 方向的斜率，而不是同時看所有方向。
+:::
+
 2. 在 3D 曲面 $z = f(x, y)$ 上，$\frac{\partial f}{\partial x}$ 的幾何意義是什麼？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+$\frac{\partial f}{\partial x}$ 代表「固定 y 值，沿著 x 方向移動時，曲面的斜率」。幾何上，就是在曲面上沿 x 方向切一刀，得到的切面曲線在該點的斜率。這條切線的斜率告訴我們：當 x 增加一點點時，z 值會增加或減少多少。
+:::
 
 3. 為什麼在 MLE 中，我們要讓所有偏微分都等於 0？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+因為我們要找 log-likelihood 的「最大值」。在多變量函數中，極值點（最大值或最小值）必定發生在梯度為零的地方，也就是所有偏微分都等於 0 的點。這就像爬山到山頂時，無論往哪個方向都是下坡（所有方向的斜率都是 0）。
+:::
+
 4. 梯度向量的方向代表什麼？大小代表什麼？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+梯度向量的「方向」指向函數值增加最快的方向（最陡上升方向）。梯度的「大小」代表在該方向上函數值增加的速度有多快。如果梯度很大，表示函數在該點變化很劇烈；如果梯度接近零，表示接近極值點或平坦區域。
+:::
 
 ### 計算題
 
@@ -628,7 +644,19 @@ p4 <- plot_bivariate_normal(-0.7, "ρ = -0.7")
 
    c. $f(x, y) = \log(x^2 + y^2)$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+a. $\frac{\partial f}{\partial x} = 3x^2 + 2y$；$\frac{\partial f}{\partial y} = 2x + 2y$
+
+b. 使用 chain rule：$\frac{\partial f}{\partial x} = ye^{xy}$；$\frac{\partial f}{\partial y} = xe^{xy}$
+
+c. 使用 chain rule：$\frac{\partial f}{\partial x} = \frac{2x}{x^2 + y^2}$；$\frac{\partial f}{\partial y} = \frac{2y}{x^2 + y^2}$
+:::
+
 6. 給定函數 $f(x, y) = x^2 - 2xy + 3y^2$，求在點 $(1, 2)$ 的梯度向量。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+先求偏微分：$\frac{\partial f}{\partial x} = 2x - 2y$；$\frac{\partial f}{\partial y} = -2x + 6y$。代入點 $(1, 2)$：$\frac{\partial f}{\partial x}|_{(1,2)} = 2(1) - 2(2) = -2$；$\frac{\partial f}{\partial y}|_{(1,2)} = -2(1) + 6(2) = 10$。因此梯度向量 $\nabla f(1, 2) = (-2, 10)$。
+:::
 
 ### R 操作題
 
@@ -646,13 +674,33 @@ z <- outer(x, y, function(x, y) _______)
 plot_ly(x = x, y = y, z = z, type = "surface")
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+將空白處填入 `sin(x) * cos(y)` 即可。完整程式碼：
+```r
+z <- outer(x, y, function(x, y) sin(x) * cos(y))
+```
+觀察這個曲面的波浪狀結構，以及偏微分如何影響曲面在不同方向的變化。
+:::
+
 8. 產生 100 個來自常態分布 $N(10, 3)$ 的隨機數，然後繪製 log-likelihood 曲面（對 $\mu$ 和 $\sigma$），找出 MLE。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+參考本章範例，程式碼架構如下：先產生資料 `data <- rnorm(100, mean = 10, sd = 3)`，建立 log-likelihood 函數，用 `expand.grid()` 建立參數網格，計算每個參數組合的 log-likelihood 值，最後用 `ggplot` 繪製等高線圖或用 `plotly` 繪製 3D 曲面。MLE 應該在 $\mu \approx 10$、$\sigma \approx 3$ 附近。
+:::
 
 ### 統計連結題
 
 9. 在多元線性迴歸中，我們有多個 $\beta$ 參數。說明如何用偏微分找到這些參數的估計值。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+在多元迴歸中，RSS 是所有 $\beta$ 參數的函數：$\text{RSS}(\beta_0, \beta_1, \ldots, \beta_p)$。我們對每個 $\beta_j$ 分別做偏微分，得到 $p+1$ 個偏微分方程式，然後令它們全部等於 0。解這個聯立方程組，就得到 OLS 估計值。矩陣形式的解為 $\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{Y}$。
+:::
+
 10. 解釋為什麼「調整共變數」(adjusting for covariates) 在數學上是一個多變量問題，需要用到偏微分的概念。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+當我們說「調整年齡後，劑量對血壓的效果」，數學上就是在問：「固定年齡不變時，劑量改變對血壓的影響」，這正是偏微分的定義！在多變量函數 $\text{血壓} = f(\text{劑量}, \text{年齡})$ 中，$\frac{\partial f}{\partial \text{劑量}}$ 就代表「控制年齡後的劑量效果」。這就是為什麼多元迴歸的係數可以解釋為「調整其他變數後的效果」。
+:::
 
 ## 本章重點整理 {.unnumbered}
 

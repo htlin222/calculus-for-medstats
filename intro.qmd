@@ -14,7 +14,7 @@ source("R/_common.R")
 當你在 R 中執行一個簡單的線性迴歸：
 
 ```{r}
-# 模擬資料：年齡與血壓的關係
+# 模擬資料:年齡與血壓的關係
 set.seed(42)
 age <- 30:70
 sbp <- 90 + 1.2 * age + rnorm(length(age), sd = 10)
@@ -28,9 +28,9 @@ summary(model)
 
 答案是：**微積分**。
 
-- 係數 1.2（斜率）是透過「讓預測誤差平方和最小」算出來的——這需要**微分**
+- 係數 1.2（斜率）是透過「讓預測誤差平方和最小」算出來的——這需要**微分** [@armitage2001statistical]
 - 標準誤的計算涉及**積分**
-- p 值是 t 分布曲線下的面積——也是**積分**
+- p 值是 t 分布曲線下的面積——也是**積分** [@casella2002statistical]
 
 ## 不懂微積分會怎樣？
 
@@ -46,9 +46,9 @@ summary(model)
 
 許多醫學研究會報告：
 
-- **Hazard ratio** 和 **hazard function**
-- **Odds ratio** 的 confidence interval（為什麼要取 log？）
-- **Maximum likelihood estimates** 的 standard error
+- **Hazard ratio** 和 **hazard function** [@collett2015modelling]
+- **Odds ratio** 的 confidence interval（為什麼要取 log？）[@agresti2018introduction]
+- **Maximum likelihood estimates** 的 standard error [@pawitan2013all]
 
 這些概念都建立在微積分的基礎上。
 
@@ -160,7 +160,7 @@ ggplot(path_data, aes(x, y)) +
 
 ### 調整心態
 
-微積分不是要讓你變成數學家。我們的目標是：
+微積分不是要讓你變成數學家 [@grinstead2012introduction]。我們的目標是：
 
 - **理解概念**：知道微分和積分「在做什麼」
 - **建立直覺**：看到統計公式時，能猜到為什麼要這樣寫

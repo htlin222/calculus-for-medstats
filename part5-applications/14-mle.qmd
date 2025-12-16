@@ -513,26 +513,64 @@ p1 / p2
 
 1. 為什麼 Likelihood 不是機率？（提示：參數積分後不等於 1）
 
+::: {.callout-tip collapse="true" title="參考答案"}
+Likelihood 將資料視為固定、參數為變動，它是參數的函數而非機率分布。對參數積分（或求和）後並不等於 1，因此不滿足機率的基本性質。Probability 是在參數已知下計算資料的機率；Likelihood 則是在資料已知下評估不同參數值的合理性。
+:::
+
 2. 取 log 後，MLE 的位置會改變嗎？為什麼？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+不會改變。因為 log 是單調遞增函數，原函數的最大值位置和 log 轉換後的最大值位置相同。取 log 的三大優勢是：(1) 乘法變加法，容易微分；(2) 避免數值下溢問題；(3) 保持最大值位置不變。
+:::
+
 3. 如果 Fisher Information 很小，代表什麼意思？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+代表資料提供的關於參數的資訊量很少，估計會不精確。因為 MLE 的漸近變異數為 $\text{Var}(\hat{\theta}) \approx \frac{1}{I(\theta)}$，Fisher Information 越小，變異數越大，估計的不確定性越高。
+:::
 
 ### 計算題
 
 1. 指數分布 $f(x; \lambda) = \lambda e^{-\lambda x}$，推導 $\lambda$ 的 MLE。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+Log-likelihood: $\ell(\lambda) = \sum_{i=1}^{n}[\log\lambda - \lambda x_i] = n\log\lambda - \lambda\sum x_i$
+
+對 $\lambda$ 微分：$\frac{d\ell}{d\lambda} = \frac{n}{\lambda} - \sum x_i = 0$
+
+解得：$\hat{\lambda} = \frac{n}{\sum x_i} = \frac{1}{\bar{x}}$（樣本平均數的倒數）
+:::
+
 2. 觀察到資料：5, 3, 4, 6, 5, 4, 3, 5（Poisson）。
    - 計算 $\hat{\lambda}$
    - 計算標準誤
 
+::: {.callout-tip collapse="true" title="參考答案"}
+- $\hat{\lambda} = \bar{x} = \frac{5+3+4+6+5+4+3+5}{8} = \frac{35}{8} = 4.375$
+
+- 標準誤：$\text{SE}(\hat{\lambda}) = \sqrt{\frac{\hat{\lambda}}{n}} = \sqrt{\frac{4.375}{8}} \approx 0.74$
+:::
+
 3. 二項分布 $X \sim \text{Binomial}(n, p)$，推導 $p$ 的 MLE。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+假設觀察到 $k$ 次成功（總共 $n$ 次試驗）。
+
+Log-likelihood: $\ell(p) = k\log p + (n-k)\log(1-p)$
+
+對 $p$ 微分：$\frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p} = 0$
+
+解得：$\hat{p} = \frac{k}{n}$（成功次數的比例）
+:::
+
 ### R 操作題
+
+1. 用數值方法驗證 Normal MLE
 
 ```{r}
 #| eval: false
 
-# 1. 用數值方法驗證 Normal MLE
+# 建立資料
 data <- rnorm(50, mean = 10, sd = 3)
 
 # 建立 log-likelihood 函數
@@ -548,8 +586,17 @@ result <- optim(c(0, 1), function(x) -log_lik(x),
                 lower = c(-Inf, 0.01))
 
 print(result$par)  # 比較 mean(data) 和 sd(data)
+```
 
-# 2. 視覺化不同樣本數的估計精度
+::: {.callout-tip collapse="true" title="參考答案"}
+執行後會發現 `result$par[1]` 非常接近 `mean(data)`，`result$par[2]` 非常接近 `sd(data)`，驗證了理論推導的正確性。這展示了數值最佳化方法與解析解的一致性，也說明了為什麼統計軟體在無解析解時會使用數值方法求 MLE。
+:::
+
+2. 視覺化不同樣本數的估計精度
+
+```{r}
+#| eval: false
+
 for (n in c(10, 50, 200)) {
   mle_samples <- replicate(1000, {
     d <- rnorm(n, 5, 2)
@@ -560,6 +607,10 @@ for (n in c(10, 50, 200)) {
   abline(v = 5, col = "red", lwd = 2)
 }
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+觀察三張圖會發現：樣本數越大，MLE 的分布越集中在真實值（紅線）附近，變異數越小。這驗證了 Fisher Information 與樣本數的關係：$I(\theta) = \frac{n}{\sigma^2}$，以及 MLE 的標準誤隨樣本數增加而減少：$\text{SE}(\hat{\mu}) = \frac{\sigma}{\sqrt{n}}$。
+:::
 
 ## 統計應用
 

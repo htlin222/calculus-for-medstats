@@ -18,7 +18,7 @@ source(here::here("R/_common.R"))
 
 ### 機率分布是什麼？
 
-想像你在急診室測量病人的體溫。你不會每次都得到完全相同的數字，而是一個**分布**。機率分布就是用數學函數來描述「某個值出現的可能性」。
+想像你在急診室測量病人的體溫。你不會每次都得到完全相同的數字，而是一個**分布**。機率分布就是用數學函數來描述「某個值出現的可能性」[@casella2002statistical]。
 
 對於**連續型隨機變數**（如體溫、血壓、存活時間），我們用兩個關鍵函數：
 
@@ -200,6 +200,8 @@ $$
 
 ### 1. 常態分布 (Normal Distribution)
 
+常態分布是統計學中最重要的連續型機率分布[@rosner2015fundamentals; @casella2002statistical]:
+
 $$
 f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
 $$
@@ -262,6 +264,8 @@ p3 <- ggplot(df3, aes(x, y, color = param)) +
 - 許多統計檢定的理論基礎
 
 ### 2. 指數分布 (Exponential Distribution)
+
+指數分布常用於描述等待時間和存活分析[@collett2015modelling]:
 
 $$
 f(x) = \lambda e^{-\lambda x}, \quad x \geq 0
@@ -502,9 +506,21 @@ ggplot(df_var, aes(x, y, color = variance)) +
 
 1. 為什麼 PDF $f(x)$ 可以大於 1，但 CDF $F(x)$ 不能大於 1？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+因為 PDF 代表的是「密度」而非機率，所以可以大於 1（例如 Uniform(0, 0.5) 的密度是 2）。而 CDF 代表的是「累積機率」$P(X \leq x)$，機率必定介於 0 到 1 之間。關鍵差異：PDF 的值本身不是機率，而是需要積分（計算面積）才能得到機率；CDF 的值本身就是機率。
+:::
+
 2. 如果 CDF 在某一段是平的（斜率 = 0），代表什麼意思？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+因為 PDF 是 CDF 的導數，所以斜率為 0 表示該區間的 PDF = 0，意即該區間的機率密度為零，隨機變數不可能落在這個範圍內。這在離散型隨機變數或混合型分布中很常見。
+:::
+
 3. 指數分布的「無記憶性」在醫學上合理嗎？舉一個合理和一個不合理的例子。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+**合理例子**：某些急性疾病的發生（如突發性心臟病），過去沒發生不會降低未來的風險。**不合理例子**：癌症復發，因為已經存活越久的病人，通常代表預後較好，未來復發的風險會降低（有記憶性）。大多數醫學事件都有記憶性，指數分布只是簡化假設。
+:::
 
 ### 計算題
 
@@ -513,9 +529,25 @@ ggplot(df_var, aes(x, y, color = variance)) +
    - $P(0.5 \leq X \leq 0.8)$
    - $E[X]$
 
+::: {.callout-tip collapse="true" title="參考答案"}
+**CDF**: $F(x) = \int_0^x 2t\,dt = [t^2]_0^x = x^2$
+
+**機率**: $P(0.5 \leq X \leq 0.8) = \int_{0.5}^{0.8} 2x\,dx = [x^2]_{0.5}^{0.8} = 0.64 - 0.25 = 0.39$
+
+**期望值**: $E[X] = \int_0^1 x \cdot 2x\,dx = \int_0^1 2x^2\,dx = [\frac{2x^3}{3}]_0^1 = \frac{2}{3}$
+:::
+
 2. 已知 CDF $F(x) = 1 - e^{-\lambda x}$, $x \geq 0$。求：
    - PDF $f(x)$
    - $P(X > 2)$ when $\lambda = 0.5$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+**PDF**: $f(x) = \frac{d}{dx}F(x) = \frac{d}{dx}(1 - e^{-\lambda x}) = \lambda e^{-\lambda x}$ （這就是指數分布）
+
+**機率**: $P(X > 2) = 1 - F(2) = 1 - (1 - e^{-0.5 \times 2}) = e^{-1} \approx 0.368$
+
+或用 R 驗證：`1 - pexp(2, rate = 0.5)` 或 `pexp(2, rate = 0.5, lower.tail = FALSE)`
+:::
 
 ### R 操作題
 
@@ -545,6 +577,14 @@ curve(dexp(x, lambda), from = 0, to = 5, col = "#2E86AB", lwd = 2)
 # 比較 P(X > 2)
 1 - pexp(2, lambda)
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+**題 1**：試著改變 `mu = 5` 和 `sigma = 2`，你會看到曲線向右平移且變得更扁平。μ 控制位置，σ 控制分散程度。
+
+**題 2**：結果約為 0.954（95.4%）。這是常態分布的重要性質：約 95% 的資料落在平均數 ±2 個標準差內。改成 ±1σ 會得到約 68%，±3σ 會得到約 99.7%。
+
+**題 3**：無記憶性驗證：$P(X > 3 | X > 1) = \frac{P(X > 3)}{P(X > 1)} = \frac{e^{-3}}{e^{-1}} = e^{-2}$，這恰好等於 $P(X > 2) = e^{-2}$，證明了無記憶性。兩個答案應該完全相同（約 0.135）。
+:::
 
 ## 統計應用
 

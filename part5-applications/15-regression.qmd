@@ -19,7 +19,7 @@ source(here::here("R/_common.R"))
 
 ### 迴歸分析是什麼？
 
-迴歸分析是**用一個或多個變數（X）來預測另一個變數（Y）**的統計方法。
+迴歸分析是**用一個或多個變數（X）來預測另一個變數（Y）**的統計方法[@hastie2009elements]。
 
 **醫學例子**：
 
@@ -525,19 +525,44 @@ ggplot(df_logistic, aes(cholesterol, heart_disease)) +
 
 1. 為什麼 OLS 估計值一定通過 $(\bar{x}, \bar{y})$？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+從數學推導可知 $\hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x}$。將 $(\bar{x}, \bar{y})$ 代入迴歸線方程式：$\hat{y} = \hat{\beta}_0 + \hat{\beta}_1\bar{x} = (\bar{y} - \hat{\beta}_1\bar{x}) + \hat{\beta}_1\bar{x} = \bar{y}$。這說明無論斜率為何，迴歸線必定通過資料的「中心點」$(\bar{x}, \bar{y})$。
+:::
+
 2. 在多元迴歸中，$\beta_1$ 的意義是什麼？（提示：「固定其他變數」）
 
+::: {.callout-tip collapse="true" title="參考答案"}
+$\beta_1$ 代表「在固定其他所有變數不變的情況下，$x_1$ 每增加 1 單位，$y$ 的平均變化量」。這就是偏微分的概念：$\beta_1 = \frac{\partial y}{\partial x_1}$。例如在血壓 ~ 年齡 + BMI 的模型中，年齡係數代表「同樣 BMI 的人，年齡每增加 1 歲，血壓平均增加多少」。
+:::
+
 3. 為什麼 Logistic regression 用 log-odds 而不是直接用機率？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+機率 $p$ 被限制在 [0,1] 之間，無法直接做線性建模。但 log-odds $\log(p/(1-p))$ 的範圍是 $(-\infty, \infty)$，可以與自變數建立線性關係。此外，log-odds 的微分 $\frac{1}{p(1-p)}$ 在 $p$ 接近 0 或 1 時變化率很大，符合實際情境（效應在極端機率時更顯著）。
+:::
 
 ### 計算題
 
 1. 資料：$(x, y) = (1, 2), (2, 3), (3, 5)$。手算 OLS 估計值。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+先算平均值：$\bar{x} = 2, \bar{y} = \frac{10}{3}$。計算 $\hat{\beta}_1 = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2} = \frac{(-1)(-\frac{4}{3}) + 0 \cdot (-\frac{1}{3}) + 1 \cdot \frac{5}{3}}{1 + 0 + 1} = \frac{\frac{4}{3} + \frac{5}{3}}{2} = 1.5$。再算 $\hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x} = \frac{10}{3} - 1.5 \times 2 = \frac{1}{3} \approx 0.33$。迴歸方程式：$\hat{y} = 0.33 + 1.5x$。
+:::
+
 2. 已知 Logistic regression：$\text{Logit}(p) = -2 + 0.5x$。
    - 當 $x = 4$ 時，$p = ?$
    - Odds ratio = ?
 
+::: {.callout-tip collapse="true" title="參考答案"}
+當 $x = 4$ 時，$\text{Logit}(p) = -2 + 0.5 \times 4 = 0$，所以 $p = \frac{1}{1 + e^{0}} = 0.5$。Odds ratio = $\exp(\beta_1) = \exp(0.5) \approx 1.65$，表示 $x$ 每增加 1 單位，odds 增加為原來的 1.65 倍（或增加 65%）。
+:::
+
 3. 推導：為什麼 $\frac{d}{dp}\log\left(\frac{p}{1-p}\right) = \frac{1}{p(1-p)}$？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+使用連鎖律與商規則。令 $u = \frac{p}{1-p}$，則 $\frac{d}{dp}\log(u) = \frac{1}{u} \cdot \frac{du}{dp}$。計算 $\frac{du}{dp} = \frac{(1-p) \cdot 1 - p \cdot (-1)}{(1-p)^2} = \frac{1}{(1-p)^2}$。因此 $\frac{d}{dp}\log\left(\frac{p}{1-p}\right) = \frac{1-p}{p} \cdot \frac{1}{(1-p)^2} = \frac{1}{p(1-p)}$。
+:::
+
 
 ### R 操作題
 
@@ -572,6 +597,15 @@ abline(v = beta1_hat, col = "red", lwd = 2)
 fit_logistic <- glm(heart_disease ~ cholesterol, family = binomial)
 exp(confint(fit_logistic))  # Odds ratio 的 95% CI
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+**任務 1**：手動計算應得到 $\hat{\beta}_1 = 0.8, \hat{\beta}_0 = 1.8$，與 `lm()` 結果一致。這驗證了 OLS 公式的正確性。
+
+**任務 2**：RSS 曲線應呈現拋物線（U 形），在 $\beta_1 = 0.8$ 處達到最小值。紅色垂直線標示最佳值位置。嘗試將 `beta1_seq` 範圍縮小到 `seq(0.5, 1.1, by = 0.01)` 以更清楚看到最小值附近的曲面形狀。
+
+**任務 3**：`exp(confint())` 會給出 odds ratio 的 95% 信賴區間。例如若得到 (1.02, 1.08)，表示「膽固醇每增加 1 mg/dL，心臟病 odds 增加 2% 到 8% 之間，95% 信心水準」。若信賴區間不包含 1，則效應顯著。
+:::
+
 
 ## 統計應用
 

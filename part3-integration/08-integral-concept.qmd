@@ -66,7 +66,7 @@ $$\text{AUC} = \int_0^{24} C(t)dt$$
 
 ### 概念
 
-假設我們要計算函數 $f(x)$ 在區間 $[a, b]$ 下的面積：
+假設我們要計算函數 $f(x)$ 在區間 $[a, b]$ 下的面積 [@stewart2015calculus]：
 
 1. 把區間分成 $n$ 個小區間
 2. 每個小區間寬度 $\Delta x = \frac{b-a}{n}$
@@ -215,7 +215,7 @@ ggplot() +
 
 ### 核心概念
 
-對於連續型隨機變數 $X$，其機率密度函數 $f(x)$ 滿足：
+對於連續型隨機變數 $X$，其機率密度函數 $f(x)$ 滿足 [@casella2002statistical; @degroot2012probability]：
 
 $$P(a \leq X \leq b) = \int_a^b f(x)dx$$
 
@@ -290,7 +290,7 @@ print(paste("方法 2 (積分):", round(p2, 4)))
 
 ### 定義
 
-累積分布函數 $F(x)$ 定義為：
+累積分布函數 $F(x)$ 定義為 [@degroot2012probability; @ross2019first]：
 
 $$F(x) = P(X \leq x) = \int_{-\infty}^x f(t)dt$$
 
@@ -366,12 +366,36 @@ p1 + p2 +
 ### 觀念題
 
 1. 為什麼說「積分是微分的反向操作」？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+積分與微分互為反向操作，因為積分求的是「累積量」，而微分求的是「瞬時變化率」。例如：若 $F(x)$ 是 $f(x)$ 的積分（反導數），則 $F'(x) = f(x)$。在統計中，CDF 是 PDF 的積分，而 PDF 是 CDF 的微分：$F(x) = \int_{-\infty}^x f(t)dt$ 且 $F'(x) = f(x)$。
+:::
+
 2. 在連續型隨機變數中，為什麼 $P(X = 5) = 0$，但 $P(4.9 < X < 5.1)$ 可能不為零？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+單點的機率 $P(X = 5) = \int_5^5 f(x)dx = 0$，因為積分區間寬度為零。但區間機率 $P(4.9 < X < 5.1) = \int_{4.9}^{5.1} f(x)dx$ 有非零的積分區間，所以面積可能不為零。這就像「線」沒有面積，但「帶狀區域」有面積。在連續型隨機變數中，我們關注的是區間機率，而非單點機率。
+:::
+
 3. 為什麼所有機率密度函數都滿足 $\int_{-\infty}^{\infty} f(x)dx = 1$？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+因為總機率必須等於 1（某個事件一定會發生）。$\int_{-\infty}^{\infty} f(x)dx$ 代表「所有可能值」的機率加總，這個總和必須是 1。這稱為「正規化條件」(normalization condition)，確保 $f(x)$ 是一個合法的機率密度函數。
+:::
 
 ### 計算題
 
 4. 用 R 的 `integrate()` 函數計算 $\int_0^2 x^2 dx$，並驗證答案是否為 $\frac{8}{3}$。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+f <- function(x) x^2
+result <- integrate(f, lower = 0, upper = 2)
+print(result$value)  # 應得到 2.666667
+print(8/3)           # 驗證：8/3 = 2.666667
+```
+理論解答：$\int_0^2 x^2 dx = \frac{x^3}{3}\Big|_0^2 = \frac{8}{3} - 0 = 2.667$，與數值積分結果相符。
+:::
 
 ```{r}
 #| eval: false
@@ -382,11 +406,62 @@ integrate(f, lower = 0, upper = 2)
 
 5. 計算標準常態分布在 $[-2, 2]$ 區間的機率（用兩種方法）。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+**方法 1：使用 CDF**
+```r
+p1 <- pnorm(2) - pnorm(-2)
+print(p1)  # 約 0.9545
+```
+
+**方法 2：使用數值積分**
+```r
+f <- function(x) dnorm(x)
+p2 <- integrate(f, lower = -2, upper = 2)$value
+print(p2)  # 約 0.9545
+```
+
+兩種方法結果相同，約 95.45%。這就是統計學中常說的「95% 信賴區間對應約 ±2 個標準差」的由來。
+:::
+
 ### R 操作題
 
 6. 修改 Riemann Sum 的程式碼，改用**右端點**而非左端點計算長方形高度，觀察結果有何不同。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+將程式碼中的 `x_left <- x_breaks[-(n_rect + 1)]` 改為 `x_right <- x_breaks[-1]`，並使用 `heights <- f(x_right)`。對於遞增函數，右端點會高估面積；對於遞減函數則會低估。但當長方形數量 → ∞ 時，左端點和右端點的結果都會收斂到相同的真實積分值。這說明積分的定義與選擇哪個端點無關。
+:::
+
 7. 繪製指數分布 $f(x) = \lambda e^{-\lambda x}$ (其中 $\lambda = 0.5$) 的 PDF 與 CDF，並標記 $P(X \leq 2)$ 的區域。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+library(ggplot2)
+library(patchwork)
+
+lambda <- 0.5
+x <- seq(0, 10, by = 0.01)
+
+# PDF
+x_shade <- seq(0, 2, by = 0.01)
+p1 <- ggplot(data.frame(x), aes(x)) +
+  geom_area(data = data.frame(x = x_shade),
+            aes(x, y = dexp(x_shade, rate = lambda)),
+            fill = "#2E86AB", alpha = 0.5) +
+  stat_function(fun = dexp, args = list(rate = lambda), linewidth = 1) +
+  geom_vline(xintercept = 2, linetype = "dashed", color = "red") +
+  labs(title = "PDF", y = "f(x)")
+
+# CDF
+p2 <- ggplot(data.frame(x), aes(x)) +
+  stat_function(fun = pexp, args = list(rate = lambda),
+                color = "#E94F37", linewidth = 1) +
+  geom_point(aes(x = 2, y = pexp(2, rate = lambda)), size = 3) +
+  labs(title = "CDF", y = "F(x)")
+
+p1 + p2
+print(pexp(2, rate = 0.5))  # P(X ≤ 2) ≈ 0.632
+```
+:::
 
 ```{r}
 #| eval: false

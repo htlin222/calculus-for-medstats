@@ -478,9 +478,21 @@ $$
 
 1. 用自己的話解釋：為什麼 $e^x$ 的導數等於自己很特別？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+大部分函數的導數（斜率）都會隨著 x 改變，但 $e^x$ 很神奇：在任何一點，它的斜率都恰好等於該點的函數值。這使得 $e^x$ 在描述「變化率與當前狀態成正比」的現象時非常好用，例如人口成長、放射性衰變、藥物濃度下降等。
+:::
+
 2. 為什麼統計學要對 likelihood 取對數？列出至少三個理由。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+三個主要理由：(1) **乘法變加法**：多個機率的乘積變成對數的和，計算更簡單；(2) **數值穩定**：很多小數相乘會造成 underflow，取 log 可避免；(3) **微分容易**：log-likelihood 的導數形式比原始 likelihood 簡單得多，方便求最大值。此外，log 是單調遞增函數，最大值位置不變。
+:::
+
 3. 在 logistic regression 中，為什麼要用 log-odds 而不是直接用機率？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+機率 $p$ 的範圍被限制在 $(0, 1)$，無法直接用線性模型（線性模型的值域是全實數）。透過轉換：機率 → odds ($\frac{p}{1-p}$) → log-odds ($\ln\frac{p}{1-p}$)，將範圍從 $(0,1)$ 映射到 $(-\infty, \infty)$，這樣就可以用線性模型來建模了。
+:::
 
 ### 計算題
 
@@ -489,13 +501,48 @@ $$
    b. $g(x) = \ln(2x + 1)$
    c. $h(x) = x^2 e^x$（使用乘法規則）
 
+::: {.callout-tip collapse="true" title="參考答案"}
+a. 使用連鎖律：$f'(x) = 3e^{3x}$
+
+b. 使用連鎖律：$g'(x) = \frac{1}{2x+1} \cdot 2 = \frac{2}{2x+1}$
+
+c. 使用乘法規則 $(uv)' = u'v + uv'$：$h'(x) = 2x \cdot e^x + x^2 \cdot e^x = (2x + x^2)e^x = x(2 + x)e^x$
+:::
+
 5. 如果 HR = 1.5，計算 log HR（即 $\beta$）。
 
+::: {.callout-tip collapse="true" title="參考答案"}
+$\beta = \ln(\text{HR}) = \ln(1.5) \approx 0.405$。可用 R 驗證：`log(1.5)`。這表示在 Cox regression 中，如果某個變數的 HR 是 1.5（風險增加 50%），其對應的迴歸係數約為 0.405。
+:::
+
 6. 驗證：$\frac{d}{dx}[\ln(x^2)] = \frac{2}{x}$
+
+::: {.callout-tip collapse="true" title="參考答案"}
+方法一（連鎖律）：$\frac{d}{dx}\ln(x^2) = \frac{1}{x^2} \cdot 2x = \frac{2x}{x^2} = \frac{2}{x}$ ✓
+
+方法二（對數性質）：$\ln(x^2) = 2\ln(x)$，所以 $\frac{d}{dx}[2\ln(x)] = 2 \cdot \frac{1}{x} = \frac{2}{x}$ ✓
+:::
 
 ### R 操作題
 
 7. 模擬一組右偏資料，繪製 log transformation 前後的直方圖。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+```r
+set.seed(123)
+data <- rlnorm(1000, meanlog = 5, sdlog = 1)
+
+# 原始資料
+hist(data, breaks = 50, col = "#2E86AB",
+     main = "原始資料（右偏）", xlab = "值")
+
+# Log 轉換後
+hist(log(data), breaks = 50, col = "#E94F37",
+     main = "Log 轉換後（更對稱）", xlab = "log(值)")
+```
+參數說明：`meanlog` 和 `sdlog` 控制分布的位置和離散程度，數值越大越右偏。
+:::
+
 
 ```{r}
 #| eval: false
@@ -506,6 +553,26 @@ data <- rlnorm(1000, meanlog = ___, sdlog = ___)
 ```
 
 8. 繪製 $f(x) = xe^{-x}$ 及其導數，找出極值點。
+
+::: {.callout-tip collapse="true" title="參考答案"}
+先求導數：使用乘法規則，$f'(x) = e^{-x} + x \cdot (-e^{-x}) = e^{-x}(1-x)$。令 $f'(x) = 0$ 得 $x = 1$。
+
+```r
+x <- seq(0, 5, by = 0.01)
+f <- x * exp(-x)
+f_prime <- exp(-x) * (1 - x)
+
+# 繪製函數
+plot(x, f, type = "l", col = "#2E86AB", lwd = 2,
+     ylab = "y", main = "f(x) = x·e^(-x) 及其導數")
+lines(x, f_prime, col = "#E94F37", lwd = 2)
+abline(v = 1, lty = 2, col = "gray")
+abline(h = 0, lty = 2, col = "gray")
+legend("topright", c("f(x)", "f'(x)"), col = c("#2E86AB", "#E94F37"), lwd = 2)
+```
+
+極值點在 $x = 1$，$f(1) = e^{-1} \approx 0.368$（極大值）。
+:::
 
 ## 本章重點整理 {.unnumbered}
 

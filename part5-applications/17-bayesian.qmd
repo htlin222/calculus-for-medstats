@@ -21,7 +21,7 @@ source(here::here("R/_common.R"))
 
 在傳統的頻率統計 (frequentist statistics) 中，我們把參數視為**固定但未知的常數**。例如：「某藥物的真實療效是 θ，我們用樣本資料估計它」。
 
-但貝氏統計 (Bayesian statistics) 有不同的觀點：參數不是常數，而是**有不確定性的隨機變數**。我們用**機率分布**來描述這種不確定性。
+但貝氏統計 (Bayesian statistics) 有不同的觀點：參數不是常數，而是**有不確定性的隨機變數**。我們用**機率分布**來描述這種不確定性[@gelman2013bayesian; @mcelreath2020statistical]。
 
 ### 醫學情境的例子
 
@@ -489,18 +489,38 @@ ggplot(df, aes(x, density, color = type, linetype = type)) +
    - 如果我們對參數完全沒有先驗知識，應該用什麼 prior？
    - 「無資訊先驗」(non-informative prior) 真的不包含任何資訊嗎？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+常用 uniform distribution 作為無資訊先驗（如 Beta(1,1)）。但「無資訊」其實是相對的概念，uniform prior 隱含「所有值等可能」的假設，這本身也是一種資訊。真正完全無資訊的 prior 在數學上不存在。
+:::
+
 2. **共軛先驗的優缺點**：
    - 為什麼共軛先驗在數學上方便？
    - 如果真實的先驗信念不是共軛分布，我們該怎麼辦？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+共軛先驗讓 posterior 與 prior 屬於同一分布族，更新規則變成簡單的參數運算，積分可以直接計算。若真實先驗不是共軛分布，可使用數值方法（如 MCMC）計算 posterior，或選擇接近的共軛分布作為近似。
+:::
 
 3. **貝氏 vs 頻率學派**：
    - 頻率學派的信賴區間：「如果重複實驗，95% 的區間會包含真實值」
    - 貝氏的可信區間：「參數有 95% 的機率落在這個區間」
    - 哪一個比較符合臨床醫師的思維？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+貝氏可信區間更符合臨床思維。醫師面對單一病人時，關心的是「這個病人的參數落在某範圍的機率」，而非「重複實驗的長期表現」。貝氏方法提供對單一案例的機率陳述，更直觀且實用。
+:::
+
 4. **積分的角色**：為什麼計算 marginal likelihood $p(x) = \int p(x \mid \theta)p(\theta)d\theta$ 通常很困難？
 
+::: {.callout-tip collapse="true" title="參考答案"}
+這個積分需要對所有可能的 θ 值積分，當參數空間複雜或高維度時，解析解通常不存在。除了共軛先驗的特殊情況外，大多需要使用數值積分或 MCMC 等取樣方法來近似，這也是為什麼共軛先驗如此重要。
+:::
+
 5. **樣本數的影響**：當樣本數 $n \to \infty$ 時，posterior 會怎樣？prior 還重要嗎？
+
+::: {.callout-tip collapse="true" title="參考答案"}
+當樣本數趨近無窮大時，likelihood 主導 posterior，prior 的影響會逐漸消失。Posterior 會收斂到真實參數值附近的窄分布。這顯示貝氏方法在大樣本下與頻率學派趨於一致，prior 只在小樣本時影響較大。
+:::
 
 ### 計算題
 
@@ -509,16 +529,28 @@ ggplot(df, aes(x, density, color = type, linetype = type)) +
    - Data：20 次試驗中成功 15 次
    - 求 posterior 的參數、期望值、眾數
 
+::: {.callout-tip collapse="true" title="參考答案"}
+Posterior 參數：Beta(3+15, 7+5) = Beta(18, 12)。期望值 = 18/(18+12) = 0.6。眾數 = (18-1)/(18+12-2) = 17/28 ≈ 0.607。資料顯示成功率較高（15/20 = 0.75），明顯改變了原本偏低的先驗信念。
+:::
+
 7. **Normal-Normal 更新**：
    - Prior：$\mu \sim N(170, 10^2)$（先驗認為平均身高 170 cm）
    - Data：測量 25 人，樣本平均 175 cm，已知 $\sigma = 8$ cm
    - 求 posterior 的參數
    - 計算 95% 可信區間
 
+::: {.callout-tip collapse="true" title="參考答案"}
+精確度：1/τ²ₙ = 1/10² + 25/8² = 0.01 + 0.391 = 0.401，故 τₙ ≈ 1.58。平均數：μₙ = (170/100 + 25×175/64) / 0.401 ≈ 174.4。Posterior: N(174.4, 1.58²)。95% 可信區間：174.4 ± 1.96×1.58 = [171.3, 177.5]。
+:::
+
 8. **從頭推導 posterior**：
    - Prior：$\theta \sim \text{Uniform}(0, 1)$（等於 $\text{Beta}(1, 1)$）
    - Likelihood：二項式，$n=10$, $k=7$
    - 寫出 posterior 的完整 PDF（包括正規化常數）
+
+::: {.callout-tip collapse="true" title="參考答案"}
+Posterior ∝ θ⁷(1-θ)³ × 1 = θ⁷(1-θ)³，這是 Beta(8, 4) 的 kernel。完整 PDF：p(θ|data) = [Γ(12)/(Γ(8)Γ(4))]θ⁷(1-θ)³ = 990θ⁷(1-θ)³，其中正規化常數 990 = 11!/(7!×3!)，確保積分等於 1。
+:::
 
 ### R 操作題
 
@@ -540,6 +572,10 @@ n <- 10
 # 觀察：當 prior 很強時，少量資料能否改變我們的信念？
 ```
 
+::: {.callout-tip collapse="true" title="參考答案"}
+使用 patchwork 繪製三組 prior-posterior 對比圖。關鍵發現：無資訊 prior (Beta(1,1)) 讓資料主導結果；強 prior (Beta(10,10)) 需要更多資料才能改變信念；與資料衝突的 prior (Beta(1,10)) 仍會被資料逐漸修正，但更新較慢。
+:::
+
 10. **模擬貝氏學習過程**：
 ```r
 # 模擬逐次更新
@@ -551,6 +587,10 @@ observations <- rbinom(50, 1, true_theta)
 # TODO: 繪製 posterior mean 與 95% 可信區間隨時間變化
 # TODO: 觀察何時 posterior 穩定下來
 ```
+
+::: {.callout-tip collapse="true" title="參考答案"}
+建立迴圈逐次更新 alpha 和 beta 參數，計算每次的 posterior mean (α/(α+β)) 和 95% 可信區間 (qbeta(c(0.025, 0.975), α, β))。繪製折線圖顯示估計值收斂過程。約 20-30 次觀察後，posterior 趨於穩定，可信區間明顯縮小。
+:::
 
 ## 統計應用
 
