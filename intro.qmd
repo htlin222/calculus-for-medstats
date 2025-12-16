@@ -62,7 +62,7 @@ summary(model)
 
 ```{r}
 #| echo: false
-#| fig-height: 6
+#| fig-height: 8
 
 # 機率密度函數
 p1 <- ggplot(data.frame(x = c(-4, 4)), aes(x)) +
@@ -94,7 +94,7 @@ p2 <- ggplot(data.frame(mu = mu_range, ll = ll_values), aes(mu, ll)) +
   annotate("text", x = 5.5, y = max(ll_values) - 2,
            label = "MLE\n(微分找極值)", color = "#E94F37") +
   labs(title = "參數估計需要微分",
-       subtitle = "找到讓 likelihood 最大的參數值",
+       subtitle = "找到 likelihood 最大值",
        x = expression(mu), y = "Log-Likelihood") +
   theme_minimal(base_size = 12)
 
@@ -109,7 +109,7 @@ p3 <- ggplot(data.frame(time, surv, hazard)) +
   annotate("text", x = 7, y = 0.7, label = "S(t) 存活函數", color = "#2E86AB") +
   annotate("text", x = 7, y = 0.4, label = "h(t) = -S'(t)/S(t)\n危險函數", color = "#E94F37") +
   labs(title = "存活分析中的導數",
-       subtitle = "Hazard function 是 survival function 的導數相關",
+       subtitle = "Hazard function 與 S(t) 的導數相關",
        x = "時間", y = "") +
   theme_minimal(base_size = 12)
 

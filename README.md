@@ -74,17 +74,14 @@
 
 ### 安裝 R 套件
 
+本專案使用 [renv](https://rstudio.github.io/renv/) 管理 R 套件依賴：
+
 ```r
-install.packages(c(
-  "ggplot2",
-  "dplyr",
-  "tidyr",
-  "patchwork",
-  "latex2exp",
-  "plotly",
-  "showtext",
-  "here"
-))
+# 安裝 renv（如果尚未安裝）
+install.packages("renv")
+
+# 還原專案依賴
+renv::restore()
 ```
 
 ### 預覽書籍

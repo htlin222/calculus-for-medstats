@@ -56,19 +56,34 @@ source("R/_common.R")
 
 ## R 環境設定
 
-本書使用以下 R 套件：
+本書使用 `renv` 管理 R 套件依賴。如果你想要在本地執行本書的程式碼，最簡單的方式是：
 
 ```{r}
 #| eval: false
 
-# 安裝所需套件
+# 方法一：使用 renv 自動安裝所有依賴（推薦）
+install.packages("renv")
+renv::restore()
+```
+
+如果你只想手動安裝個別套件，以下是本書使用的主要套件：
+
+```{r}
+#| eval: false
+
+# 方法二：手動安裝所需套件
 install.packages(c(
   "ggplot2",    # 主要繪圖工具
   "dplyr",      # 資料處理
   "tidyr",      # 資料整理
   "patchwork",  # 組合多個圖
-  "latex2exp",  # 在圖中顯示數學符號
-  "plotly"      # 互動式 3D 圖
+  "plotly",     # 互動式 3D 圖
+  "showtext",   # 中文字型支援
+  "here",       # 專案路徑管理
+  "MASS",       # 多變量統計
+  "mvtnorm",    # 多變量常態分布
+  "pracma",     # 數值積分方法
+  "gridExtra"   # 圖形排列
 ))
 ```
 

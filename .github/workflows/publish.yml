@@ -26,25 +26,8 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          packages: |
-            any::ggplot2
-            any::dplyr
-            any::tidyr
-            any::patchwork
-            any::scales
-            any::latex2exp
-            any::knitr
-            any::rmarkdown
-            any::showtext
-            any::here
-            any::plotly
-            any::MASS
-            any::mvtnorm
-            any::pracma
-            any::gridExtra
+      - name: Setup renv
+        uses: r-lib/actions/setup-renv@v2
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
