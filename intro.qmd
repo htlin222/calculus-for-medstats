@@ -106,12 +106,13 @@ hazard <- rep(0.3, length(time))
 p3 <- ggplot(data.frame(time, surv, hazard)) +
   geom_line(aes(time, surv), color = "#2E86AB", linewidth = 1.2) +
   geom_line(aes(time, hazard), color = "#E94F37", linewidth = 1.2, linetype = "dashed") +
-  annotate("text", x = 7, y = 0.7, label = "S(t) 存活函數", color = "#2E86AB") +
-  annotate("text", x = 7, y = 0.4, label = "h(t) = -S'(t)/S(t)\n危險函數", color = "#E94F37") +
+  annotate("text", x = 5, y = 0.75, label = "S(t) 存活函數", color = "#2E86AB", hjust = 0) +
+  annotate("text", x = 5, y = 0.45, label = "h(t) = -S'(t)/S(t) 危險函數", color = "#E94F37", hjust = 0) +
   labs(title = "存活分析中的導數",
        subtitle = "Hazard function 與 S(t) 的導數相關",
        x = "時間", y = "") +
-  theme_minimal(base_size = 12)
+  theme_minimal(base_size = 12) +
+  theme(plot.margin = margin(5, 15, 5, 5))
 
 # 組合圖
 (p1 | p2) / p3 +

@@ -8,10 +8,10 @@ library(showtext)
 library(here)
 
 # 字型設定 --------------------------------------------------------------------
-# 使用 jf-openhuninn 開源字型支援中文顯示
+# 使用 Noto Sans TC 開源字型支援中文顯示
 
 # 註冊字型（使用 here() 確保從專案根目錄找到字型檔案）
-font_add("jf-openhuninn", here("jf-openhuninn-2.1.ttf"))
+font_add("noto-sans-tc", here("NotoSansTC-Medium.ttf"))
 
 # 啟用 showtext 自動渲染
 showtext_auto()
@@ -30,7 +30,7 @@ colors_calculus <- list(
 
 # 統一主題 --------------------------------------------------------------------
 theme_calculus <- function(base_size = 14) {
-  theme_minimal(base_size = base_size, base_family = "jf-openhuninn") +
+  theme_minimal(base_size = base_size, base_family = "noto-sans-tc") +
     theme(
       # 標題
       plot.title = element_text(
@@ -80,8 +80,8 @@ theme_calculus <- function(base_size = 14) {
 theme_set(theme_calculus())
 
 # 設定 ggplot2 預設字型
-update_geom_defaults("text", list(family = "jf-openhuninn"))
-update_geom_defaults("label", list(family = "jf-openhuninn"))
+update_geom_defaults("text", list(family = "noto-sans-tc"))
+update_geom_defaults("label", list(family = "noto-sans-tc"))
 
 # 訊息 ------------------------------------------------------------------------
-message("已載入 _common.R：字型設定為 jf-openhuninn，主題設定為 theme_calculus()")
+message("已載入 _common.R：字型設定為 noto-sans-tc，主題設定為 theme_calculus()")
