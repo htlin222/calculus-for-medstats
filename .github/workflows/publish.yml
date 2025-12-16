@@ -41,6 +41,10 @@ jobs:
             any::showtext
             any::here
             any::plotly
+            any::MASS
+            any::mvtnorm
+            any::pracma
+            any::gridExtra
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
