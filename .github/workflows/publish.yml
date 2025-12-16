@@ -38,6 +38,9 @@ jobs:
             any::latex2exp
             any::knitr
             any::rmarkdown
+            any::showtext
+            any::here
+            any::plotly
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2

@@ -49,7 +49,7 @@ book:
 format:
   html:
     theme: cosmo
-    code-fold: false
+    code-fold: true
     code-tools: true
     toc: true
     toc-depth: 3
