@@ -1,3 +1,7 @@
+![GitHub stars](https://img.shields.io/github/stars/htlin222/calculus-for-medstats?style=flat-square)
+![Last commit](https://img.shields.io/github/last-commit/htlin222/calculus-for-medstats?style=flat-square)
+![License](https://img.shields.io/github/license/htlin222/calculus-for-medstats?style=flat-square)
+
 # 醫學統計的微積分基礎
 
 **用 R 視覺化理解統計背後的數學**
